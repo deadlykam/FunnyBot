@@ -43,6 +43,9 @@ public class FunnyBot {
                 System.out.println(st.getUser().getName() + "---" 
                                    + st.getText());
             }
+            
+            // For tweeting in tweeter
+            Status statusForTweet = twitter.updateStatus("Test tweet homie");
         }
         catch(TwitterException twitterException){
             System.out.println("Error: " + twitterException.getErrorMessage());
