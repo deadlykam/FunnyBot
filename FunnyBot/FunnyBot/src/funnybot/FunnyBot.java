@@ -1,13 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package funnybot;
+
+import java.util.List;
+import twitter4j.Status;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
 
 /**
  *
- * @author Kamran
+ * @author ShitHasian
  */
 public class FunnyBot {
 
@@ -15,7 +16,37 @@ public class FunnyBot {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        // Initializing the configuration builder
+        ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+        
+        // Setting up the configuration builder
+        configurationBuilder.setDebugEnabled(true)
+                .setOAuthConsumerKey("consumer key here")
+                .setOAuthConsumerSecret("consumer secret here")
+                .setOAuthAccessToken("access token here")
+                .setOAuthAccessTokenSecret("access token secret here");
+        
+        // Initializing the twitter factory
+        TwitterFactory twitterFactory = 
+                new TwitterFactory(configurationBuilder.build());
+        
+        // Getting the twitter instance
+        twitter4j.Twitter twitter = twitterFactory.getInstance();
+        
+        try{
+            // Getting all the status from timeline
+            List<Status> status = twitter.getHomeTimeline();
+            
+            // Looping to show username and tweets
+            for(Status st : status)
+            {
+                System.out.println(st.getUser().getName() + "---" 
+                                   + st.getText());
+            }
+        }
+        catch(TwitterException twitterException){
+            System.out.println("Error: " + twitterException.getErrorMessage());
+        }
     }
     
 }
