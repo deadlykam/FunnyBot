@@ -17,49 +17,13 @@ public class FileController {
     
     public static String CommandDone = "-done-";
     
-    private String _consumerKey;
-    private String _consumerKeySecret;
-    private String _accessToken;
-    private String _accessTokenSecret;
-    
-    private List<String> _dataTemp;
+    private List<String> _data;
     
     /**
      * This class can not be an instant.
      */
-    private FileController()
-    {
-        _consumerKey = "";
-        _consumerKeySecret = "";
-        _accessToken = "";
-        _accessTokenSecret = "";
-    }
+    private FileController(){}
     
-    /**
-     * This constructor can not be an instant, only
-     * initiating from with in with the credentials
-     * 
-     * @param consumerKey The consumer key for the twitter,
-     *                    of type String
-     * 
-     * @param consumerKeySecret The consumer key secret for
-     *                          the twitter of type String
-     * 
-     * @param accessToken The access token for the twitter,
-     *                    of type String
-     * 
-     * @param accessTokenSecret The access token secret for
-     *                          the twitter, of type String
-     */
-    private FileController(String consumerKey, 
-            String consumerKeySecret, String accessToken,
-            String accessTokenSecret)
-    {
-        _consumerKey = consumerKey;
-        _consumerKeySecret = consumerKeySecret;
-        _accessToken = accessToken;
-        _accessTokenSecret = accessTokenSecret;
-    }
     
     /**
      * This method saves the data by over writing the old
@@ -131,14 +95,19 @@ public class FileController {
         }
     }
     
+    /**
+     * This method loads the data from the given path.
+     * 
+     * @param path The path to the file location, of type String
+     */
     public void LoadData(String path)
     {
         try
         {
-            _dataTemp = null; // Removing and clearing previous
+            _data = null; // Removing and clearing previous
                               // data
             
-            _dataTemp = new ArrayList<>();
+            _data = new ArrayList<>();
             
             // Loading the file
             File file = new File(path);
@@ -153,63 +122,36 @@ public class FileController {
             while(!(data = bufferReader.readLine())
                     .equals(CommandDone))
             {
-                _dataTemp.add(data); // Storing the data
+                _data.add(data); // Storing the data
                                      // temporarily
             }
-            
-            _consumerKey = _dataTemp.get(0); // Storing consumer 
-                                             // key
-                                             
-            _consumerKeySecret = _dataTemp.get(1); // Storing
-                                                   // consumer
-                                                   // secret key
-                                                   
-            _accessToken = _dataTemp.get(2); // Storing access token
-                                             // key
-            
-            _accessTokenSecret = _dataTemp.get(3); // Storing access
-                                                   // token secret
-                                                   // key
-                                                   
-            _dataTemp = null; // Removing and clearing data
         }
         catch(FileNotFoundException e)
-        {}
+        {
+            System.out.println("Error: FileNotFoundException - " + 
+                    "FileController - " + e.getMessage());
+        }
         catch(IOException e)
-        {}
-        
-        
+        {
+            System.out.println("Error: IOException - " + 
+                    "FileController - " + e.getMessage());
+        }
     }
     
     /**
-     * This method returns the value of the consumer key.
+     * This method returns the indexth data.
      * 
-     * @return The consumer key value, of type String
+     * @return The indexth data, of type String
      */
-    public String GetConsumerKey(){ return _consumerKey; }
+    public String GetData(int index){ return _data.get(index); }
     
     /**
-     * This method returns the value of the consumer key secret.
+     * This method checks if there are any data available.
      * 
-     * @return The consumer key secret value, of type String
+     * @return True means data is available, false otherwise,
+     *         of tyep boolean
      */
-    public String GetConsumerKeySecret()
-    { return _consumerKeySecret; }
-    
-    /**
-     * This method returns the value of the access token.
-     * 
-     * @return The access token value, of type String
-     */
-    public String GetAccessToken(){ return _accessToken; }
-    
-    /**
-     * This method returns the value of the access token secret.
-     * 
-     * @return The access token secret value, of type String
-     */
-    public String GetAccessTokenSecret()
-    { return _accessTokenSecret; }
+    public boolean IsDataTemp(){ return _data != null; }
     
     /**
      * This method initializes the singleton.
@@ -217,31 +159,6 @@ public class FileController {
     public static void Initialize()
     { 
         _instance = new FileController(); 
-    }
-    
-    /**
-     * This method initializes the FileController with the
-     * credentials.
-     * 
-     * @param consumerKey The consumer key for the twitter,
-     *                    of type String
-     * 
-     * @param consumerKeySecret The consumer key secret for
-     *                          the twitter of type String
-     * 
-     * @param accessToken The access token for the twitter,
-     *                    of type String
-     * 
-     * @param accessTokenSecret The access token secret for
-     *                          the twitter, of type String
-     */
-    public static void Initialize(String consumerKey, 
-            String consumerKeySecret, String accessToken,
-            String accessTokenSecret)
-    {
-        _instance = new FileController(consumerKey, 
-                consumerKeySecret, accessToken, 
-                accessTokenSecret);
     }
     
     /**
