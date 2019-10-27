@@ -6,12 +6,15 @@
 package com.funnybot.main;
 
 import com.funnybot.filecontrollers.FileController;
+import com.funnybot.helpers.DataLogController;
 import com.funnybot.twittercontrollers.TwitterController;
 import javax.swing.JFileChooser;
 
 
-public class FunnyBotGUI extends javax.swing.JFrame {
+public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
 
+    private long _threadSleepTimer = 5000;
+    
     /**
      * Creates new form FunnyBotGUI
      */
@@ -23,8 +26,37 @@ public class FunnyBotGUI extends javax.swing.JFrame {
                                      
         TwitterController.Initialize(); // Initializing the
                                         // twitter controller
+                                        
+        DataLogController.GetInstance() // Initializing the
+                .SetDebugEnabled(true); // data log controller
     }
 
+    @Override
+    public void run() {
+        while(true) // Continuous thread
+        {
+            try
+            {
+                Thread.sleep(_threadSleepTimer); // Thread sleeping
+                
+                // Updating the bottom bar
+                LblCounter.setText(
+                        "Success: " + 
+                        DataLogController.GetInstance().GetSuccessCounter() + 
+                        " Fail: " + 
+                        DataLogController.GetInstance().GetFailCounter());
+            }
+            catch(InterruptedException e)
+            {
+                DataLogController.GetInstance()
+                        .LogFailed("FunnyBotGUI, "
+                                 + "run(), "
+                                 + "InterruptedException, "
+                                 + "Message: " + e.getMessage());
+            }
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,11 +69,14 @@ public class FunnyBotGUI extends javax.swing.JFrame {
         FileChooser = new javax.swing.JFileChooser();
         BtnTest = new javax.swing.JButton();
         TxtTest = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        LblCounter = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         MenuOpen = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         MenuCredentials = new javax.swing.JMenuItem();
+        MenuLogPath = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,6 +86,24 @@ public class FunnyBotGUI extends javax.swing.JFrame {
                 BtnTestActionPerformed(evt);
             }
         });
+
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+
+        LblCounter.setFont(new java.awt.Font("Dialog", 2, 12)); // NOI18N
+        LblCounter.setForeground(new java.awt.Color(0, 0, 0));
+        LblCounter.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        LblCounter.setText("Success: 0 Fail: 0");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(LblCounter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(LblCounter, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+        );
 
         jMenu1.setText("File");
 
@@ -74,6 +127,14 @@ public class FunnyBotGUI extends javax.swing.JFrame {
         });
         jMenu2.add(MenuCredentials);
 
+        MenuLogPath.setText("Log Path");
+        MenuLogPath.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuLogPathActionPerformed(evt);
+            }
+        });
+        jMenu2.add(MenuLogPath);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -91,24 +152,30 @@ public class FunnyBotGUI extends javax.swing.JFrame {
                         .addGap(264, 264, 264)
                         .addComponent(BtnTest)))
                 .addContainerGap(175, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(129, Short.MAX_VALUE)
+                .addContainerGap(115, Short.MAX_VALUE)
                 .addComponent(TxtTest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(BtnTest)
-                .addGap(170, 170, 170))
+                .addGap(152, 152, 152)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void MenuOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuOpenActionPerformed
+        // Setting the mode of the file chooser to files only
+        FileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        
         int status = FileChooser.showOpenDialog(this); // Getting status of
-        // the file chooser
-
+                                                       // the file chooser
+                                                       
+        // Condition to check if file chooser selected a file
         if(status == JFileChooser.APPROVE_OPTION)
         {
             FileController.GetInstance().LoadData(FileChooser.getSelectedFile()
@@ -137,6 +204,23 @@ public class FunnyBotGUI extends javax.swing.JFrame {
     private void BtnTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTestActionPerformed
         TwitterController.GetInstance().SendTweet(TxtTest.getText());
     }//GEN-LAST:event_BtnTestActionPerformed
+
+    private void MenuLogPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogPathActionPerformed
+        // Setting the mode of the file chooser to directories only
+        FileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        
+        int status = FileChooser.showOpenDialog(this); // Getting status of
+                                                       // the file chooser
+
+        // Condition to check if file chooser selected a file
+        if(status == JFileChooser.APPROVE_OPTION)
+        {
+            // Setting the path of the data logger
+            DataLogController.GetInstance().SetPath(
+                    FileChooser.getSelectedFile()
+                    .toPath().toString());
+        }
+    }//GEN-LAST:event_MenuLogPathActionPerformed
 
     /**
      * @param args the command line arguments
@@ -168,7 +252,11 @@ public class FunnyBotGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FunnyBotGUI().setVisible(true);
+                FunnyBotGUI app = new FunnyBotGUI();
+                app.setVisible(true);
+                
+                Thread appThread = new Thread(app);
+                appThread.start();
             }
         });
     }
@@ -176,11 +264,15 @@ public class FunnyBotGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnTest;
     private javax.swing.JFileChooser FileChooser;
+    private javax.swing.JLabel LblCounter;
     private javax.swing.JMenuItem MenuCredentials;
+    private javax.swing.JMenuItem MenuLogPath;
     private javax.swing.JMenuItem MenuOpen;
     private javax.swing.JTextField TxtTest;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
 }
