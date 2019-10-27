@@ -1,5 +1,6 @@
 package com.funnybot.twittercontrollers;
 
+import com.funnybot.helpers.DataLogController;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -92,11 +93,19 @@ public class TwitterController {
             
             // Getting the twitter instance
             _twitter = _twitterFactory.getInstance();
+            
+            DataLogController.GetInstance()
+                    .LogSuccess("Success: TwitterController, "
+                            + "SetupTwitter(), "
+                            + "Twitter initialized with "
+                            + "credentials successful");
         }
         else // Condition for showing error message
-            System.out.println("Error: TwitterController - "
-                    + "Failed to initialize twitter, "
-                    + "credentials not given.");
+            DataLogController.GetInstance()
+                    .LogFailed("Error: TwitterController, "
+                            + "SetupTwitter(), "
+                            + "Failed to initialize twitter, "
+                            + "credentials not given");
     }
     
     /**
@@ -183,15 +192,30 @@ public class TwitterController {
         {
             try{
                 _twitter.updateStatus(tweet); // Sending tweet
+                
+                DataLogController.GetInstance()
+                        .LogSuccess("Success: "
+                                + "TwitterController, "
+                                + "SendTweet(String), "
+                                + "Tweet sent successful, "
+                                + "Message: "
+                                + tweet);
+                
             }
             catch(TwitterException e){
-                System.out.println("Error: TwitterException - "
-                        + "TwitterController - "
-                        + e.getMessage());
+                DataLogController.GetInstance()
+                        .LogFailed("Error: TwitterController, "
+                        + "TwitterException, "
+                        + "SendTweet(String), "
+                        + "Tweet sent failed, "
+                        + "On Tweet Message: " + tweet
+                        + ", Message: " + e.getMessage());
             }
         }
         else // Condition for showing error message
-            System.out.println("Error: TwitterController - "
+            DataLogController.GetInstance()
+                    .LogFailed("Error: TwitterController, "
+                    + "SendTweet(String), "
                     + "Failed to initialize twitter, "
                     + "credentials not given.");
     }

@@ -1,5 +1,6 @@
 package com.funnybot.filecontrollers;
 
+import com.funnybot.helpers.DataLogController;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,7 +16,7 @@ public class FileController {
     
     private static FileController _instance; // Singleton
     
-    public static String CommandDone = "-done-";
+    public static final String CommandDone = "-done-";
     
     private List<String> _data;
     
@@ -48,13 +49,19 @@ public class FileController {
         }
         catch(FileNotFoundException e)
         {
-            System.out.println("Error: FileNotFound - " +
-                    "FileController - " + e.getMessage());
+            DataLogController.GetInstance()
+                    .LogFailed("Error: FileController, "
+                    + "FileNotFoundException, "
+                    + "SaveFileOverWrite(String, String), "
+                    + "Message: " + e.getMessage());
         }
         catch(IOException e)
         {
-            System.out.println("Error: IO - FileController"
-                    + " " + e.getMessage());
+            DataLogController.GetInstance()
+                    .LogFailed("Error: FileController, "
+                    + "IOException, "
+                    + "SaveFileOverWrite(String, String), "
+                    + "Message: " + e.getMessage());
         }
     }
     
@@ -80,18 +87,24 @@ public class FileController {
                     path, true
                 )));
             
-            writer.print(data); // Storing the data
+            writer.println(data); // Storing the data
             writer.close(); // Closing the writer
         }
         catch(FileNotFoundException e)
         {
-            System.out.println("Error: FileNotFound - " +
-                    "FileController - " + e.getMessage());
+            DataLogController.GetInstance()
+                    .LogFailed("Error: FileController, "
+                    + "FileNotFoundException, "
+                    + "SaveFileAppend(String, String), "
+                    + "Message: " + e.getMessage());
         }
         catch(IOException e)
         {
-            System.out.println("Error: IO - FileController"
-                    + " " + e.getMessage());
+            DataLogController.GetInstance()
+                    .LogFailed("Error: FileController, "
+                    + "IOException, "
+                    + "SaveFileAppend(String, String), "
+                    + "Message: " + e.getMessage());
         }
     }
     
@@ -128,13 +141,19 @@ public class FileController {
         }
         catch(FileNotFoundException e)
         {
-            System.out.println("Error: FileNotFoundException - " + 
-                    "FileController - " + e.getMessage());
+            DataLogController.GetInstance()
+                    .LogFailed("Error: FileController, "
+                    + "FileNotFoundException, "
+                    + "LoadData(String), "
+                    + "Message: " + e.getMessage());
         }
         catch(IOException e)
         {
-            System.out.println("Error: IOException - " + 
-                    "FileController - " + e.getMessage());
+            DataLogController.GetInstance()
+                    .LogFailed("Error: FileController, "
+                    + "IOException, "
+                    + "LoadData(String), "
+                    + "Message: " + e.getMessage());
         }
     }
     
