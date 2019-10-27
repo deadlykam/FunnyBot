@@ -6,6 +6,7 @@
 package com.funnybot.main;
 
 import com.funnybot.filecontrollers.FileController;
+import com.funnybot.twittercontrollers.TwitterController;
 import javax.swing.JFileChooser;
 
 /**
@@ -21,6 +22,19 @@ public class CredentialUI extends javax.swing.JFrame {
      */
     public CredentialUI() {
         initComponents();
+        
+        // Setting up the credentials in the menu if loaded before hand
+        txtConsumerKey.setText(TwitterController.GetInstance()
+                .GetConsumerKey());
+        
+        txtConsumerSecret.setText(TwitterController.GetInstance()
+                .GetConsumerKeySecret());
+        
+        txtAccessToken.setText(TwitterController.GetInstance()
+                .GetAccessToken());
+        
+        txtAccessTokenSecret.setText(TwitterController.GetInstance()
+                .GetAccessTokenSecret());
     }
 
     /**
@@ -46,7 +60,7 @@ public class CredentialUI extends javax.swing.JFrame {
         fileChooserSave.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
         fileChooserSave.setSelectedFile(new java.io.File("C:\\Program Files\\NetBeans 8.2\\.txt"));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -180,6 +194,16 @@ public class CredentialUI extends javax.swing.JFrame {
                     .SaveFileOverWrite(fileChooserSave.getSelectedFile()
                             .toPath().toString(),
                             _data);
+            
+            // Setting up twitter credentials
+            TwitterController.GetInstance().SetCredentials(
+                    txtConsumerKey.getText(), 
+                    txtConsumerSecret.getText(), 
+                    txtAccessToken.getText(), 
+                    txtAccessTokenSecret.getText());
+            
+            // Initializing twitter with new credentials
+            TwitterController.GetInstance().SetupTwitter();
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

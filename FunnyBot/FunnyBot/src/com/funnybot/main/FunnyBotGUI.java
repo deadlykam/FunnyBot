@@ -6,12 +6,10 @@
 package com.funnybot.main;
 
 import com.funnybot.filecontrollers.FileController;
+import com.funnybot.twittercontrollers.TwitterController;
 import javax.swing.JFileChooser;
 
-/**
- *
- * @author Kamran
- */
+
 public class FunnyBotGUI extends javax.swing.JFrame {
 
     /**
@@ -20,7 +18,11 @@ public class FunnyBotGUI extends javax.swing.JFrame {
     public FunnyBotGUI() {
         initComponents();
         
-        FileController.Initialize(); // Initializing the file controller
+        FileController.Initialize(); // Initializing the file 
+                                     // controller
+                                     
+        TwitterController.Initialize(); // Initializing the
+                                        // twitter controller
     }
 
     /**
@@ -33,13 +35,22 @@ public class FunnyBotGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         FileChooser = new javax.swing.JFileChooser();
+        BtnTest = new javax.swing.JButton();
+        TxtTest = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         MenuOpen = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
+        MenuCredentials = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        BtnTest.setText("TestButton");
+        BtnTest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnTestActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -55,8 +66,13 @@ public class FunnyBotGUI extends javax.swing.JFrame {
 
         jMenu2.setText("Edit");
 
-        jMenu5.setText("Credentials");
-        jMenu2.add(jMenu5);
+        MenuCredentials.setText("Credentials");
+        MenuCredentials.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuCredentialsActionPerformed(evt);
+            }
+        });
+        jMenu2.add(MenuCredentials);
 
         jMenuBar1.add(jMenu2);
 
@@ -66,11 +82,24 @@ public class FunnyBotGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 642, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(164, 164, 164)
+                        .addComponent(TxtTest, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(264, 264, 264)
+                        .addComponent(BtnTest)))
+                .addContainerGap(175, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 373, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(129, Short.MAX_VALUE)
+                .addComponent(TxtTest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(BtnTest)
+                .addGap(170, 170, 170))
         );
 
         pack();
@@ -85,16 +114,29 @@ public class FunnyBotGUI extends javax.swing.JFrame {
             FileController.GetInstance().LoadData(FileChooser.getSelectedFile()
                 .toPath().toString());
 
-            System.out.println(
-                FileController.GetInstance().GetConsumerKey()
-                + "\n"
-                + FileController.GetInstance().GetConsumerKeySecret()
-                + "\n"
-                + FileController.GetInstance().GetAccessToken()
-                + "\n"
-                + FileController.GetInstance().GetAccessTokenSecret());
+            // Checking if data has been loaded
+            if(FileController.GetInstance().IsDataTemp()){
+                
+                // Setting up twitter credentials
+                TwitterController.GetInstance().SetCredentials(
+                        FileController.GetInstance().GetData(0), 
+                        FileController.GetInstance().GetData(1), 
+                        FileController.GetInstance().GetData(2),
+                        FileController.GetInstance().GetData(3));
+                
+                // Initializing twitter with new credentials
+                TwitterController.GetInstance().SetupTwitter();
+            }
         }
     }//GEN-LAST:event_MenuOpenActionPerformed
+
+    private void MenuCredentialsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuCredentialsActionPerformed
+        new CredentialUI().setVisible(true);
+    }//GEN-LAST:event_MenuCredentialsActionPerformed
+
+    private void BtnTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTestActionPerformed
+        TwitterController.GetInstance().SendTweet(TxtTest.getText());
+    }//GEN-LAST:event_BtnTestActionPerformed
 
     /**
      * @param args the command line arguments
@@ -132,11 +174,13 @@ public class FunnyBotGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnTest;
     private javax.swing.JFileChooser FileChooser;
+    private javax.swing.JMenuItem MenuCredentials;
     private javax.swing.JMenuItem MenuOpen;
+    private javax.swing.JTextField TxtTest;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     // End of variables declaration//GEN-END:variables
 }
