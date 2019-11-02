@@ -7,19 +7,23 @@ package com.funnybot.main;
 
 import com.funnybot.filecontrollers.FileController;
 import com.funnybot.helpers.DataLogController;
+import com.funnybot.twittercontrollers.TimerCycleController;
 import com.funnybot.twittercontrollers.TwitterController;
 import javax.swing.JFileChooser;
 
 
 public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
 
-    private long _threadSleepTimer = 5000;
+    private boolean _isStart;
+    private Thread _appThread;
     
     /**
      * Creates new form FunnyBotGUI
      */
     public FunnyBotGUI() {
         initComponents();
+        
+        _isStart = false;
         
         FileController.Initialize(); // Initializing the file 
                                      // controller
@@ -29,30 +33,87 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                                         
         DataLogController.GetInstance() // Initializing the
                 .SetDebugEnabled(true); // data log controller
+        
+        TimerCycleController.Initialize(); // Initializing the
+                                           // timer cycle
+                                           // controller
+                                           
+        _appThread = new Thread(this);
+        _appThread.start();
     }
 
+    /**
+     * This method returns the status of the bot.
+     * 
+     * @return The status of the bot, of type String
+     */
+    private String GetBotStatus()
+    {
+        return _isStart ? "Status: On" : "Status: Off";
+    }
+    
+    /**
+     * This method updates the bottom bar.
+     */
+    private void UpdateBottomBar()
+    {
+        // Updating the bottom bar
+        LblCounter.setText(
+                GetBotStatus() + " - " +
+                TimerCycleController.GetInstance().toString() 
+                + " - " +
+                "Success: " + 
+                DataLogController.GetInstance()
+                        .GetSuccessCounter() + 
+                " Fail: " + 
+                DataLogController.GetInstance()
+                        .GetFailCounter());
+    }
+    
     @Override
     public void run() {
         while(true) // Continuous thread
         {
-            try
+            // Condition for starting the bot
+            if(_isStart)
             {
-                Thread.sleep(_threadSleepTimer); // Thread sleeping
-                
-                // Updating the bottom bar
-                LblCounter.setText(
-                        "Success: " + 
-                        DataLogController.GetInstance().GetSuccessCounter() + 
-                        " Fail: " + 
-                        DataLogController.GetInstance().GetFailCounter());
+                try
+                {
+                    Thread.sleep(TimerCycleController
+                            .GetInstance()
+                            .GetTimer()); // Thread sleeping
+
+                    // Condition for sending messages
+                    if(DataLogController.GetInstance().IsSamdDay())
+                    {
+                        //Todo: Send tweet here
+                    }
+                    else // Condition for resetting the messages
+                    {
+                        DataLogController.GetInstance()
+                                .SetCurrentDate();
+                        
+                        //Todo: Reset all the messages here
+                    }
+                    
+                    System.out.println("Sent tweet!");
+                    
+                    // Updating the bottom bar
+                    UpdateBottomBar();
+                }
+                catch(InterruptedException e)
+                {
+                    DataLogController.GetInstance()
+                            .LogFailed("FunnyBotGUI, "
+                                     + "run(), "
+                                     + "InterruptedException, "
+                                     + "Message: " + e.getMessage());
+                }
             }
-            catch(InterruptedException e)
+            else
             {
-                DataLogController.GetInstance()
-                        .LogFailed("FunnyBotGUI, "
-                                 + "run(), "
-                                 + "InterruptedException, "
-                                 + "Message: " + e.getMessage());
+                // Updating the bottom bar
+                UpdateBottomBar();
             }
         }
     }
@@ -77,6 +138,10 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         jMenu2 = new javax.swing.JMenu();
         MenuCredentials = new javax.swing.JMenuItem();
         MenuLogPath = new javax.swing.JMenuItem();
+        btnMenuSetTimer = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        btnStart = new javax.swing.JMenuItem();
+        btnStop = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -92,7 +157,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         LblCounter.setFont(new java.awt.Font("Dialog", 2, 12)); // NOI18N
         LblCounter.setForeground(new java.awt.Color(0, 0, 0));
         LblCounter.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        LblCounter.setText("Success: 0 Fail: 0");
+        LblCounter.setText("Status: Off - Success: 0 Fail: 0");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -135,7 +200,36 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         });
         jMenu2.add(MenuLogPath);
 
+        btnMenuSetTimer.setText("Set Timer");
+        btnMenuSetTimer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMenuSetTimerActionPerformed(evt);
+            }
+        });
+        jMenu2.add(btnMenuSetTimer);
+
         jMenuBar1.add(jMenu2);
+
+        jMenu3.setText("Bot");
+
+        btnStart.setText("Start");
+        btnStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStartActionPerformed(evt);
+            }
+        });
+        jMenu3.add(btnStart);
+
+        btnStop.setText("Stop");
+        btnStop.setEnabled(false);
+        btnStop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStopActionPerformed(evt);
+            }
+        });
+        jMenu3.add(btnStop);
+
+        jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
 
@@ -222,6 +316,41 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         }
     }//GEN-LAST:event_MenuLogPathActionPerformed
 
+    private void btnMenuSetTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuSetTimerActionPerformed
+        new TimerUI().setVisible(true);
+    }//GEN-LAST:event_btnMenuSetTimerActionPerformed
+
+    private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
+        _isStart = true; // Starting the bot
+        btnStart.setEnabled(false);
+        btnStop.setEnabled(true);
+        
+        DataLogController.GetInstance()
+                .LogSuccess("Success: FunnyBotGUI, "
+                        + "btnStartActionPerformed(ActionEvent), "
+                        + "Successfully started the bot.");
+        
+        // Updating the bottom bar
+        UpdateBottomBar();
+        
+        // Setting the current date
+        DataLogController.GetInstance().SetCurrentDate();
+    }//GEN-LAST:event_btnStartActionPerformed
+
+    private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
+        _isStart = false; // Stopping the bot
+        btnStart.setEnabled(true);
+        btnStop.setEnabled(false);
+        
+        // Condition for stopping the thread
+        if(!_appThread.isInterrupted()) _appThread.interrupt();
+        
+        DataLogController.GetInstance()
+                .LogSuccess("Success: FunnyBotGUI, "
+                        + "btnStopActionPerformed(ActionEvent), "
+                        + "Successfully stopped the bot.");
+    }//GEN-LAST:event_btnStopActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -255,8 +384,8 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                 FunnyBotGUI app = new FunnyBotGUI();
                 app.setVisible(true);
                 
-                Thread appThread = new Thread(app);
-                appThread.start();
+                /*Thread appThread = new Thread(app);
+                appThread.start();*/
             }
         });
     }
@@ -269,8 +398,12 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private javax.swing.JMenuItem MenuLogPath;
     private javax.swing.JMenuItem MenuOpen;
     private javax.swing.JTextField TxtTest;
+    private javax.swing.JMenuItem btnMenuSetTimer;
+    private javax.swing.JMenuItem btnStart;
+    private javax.swing.JMenuItem btnStop;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

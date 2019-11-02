@@ -15,12 +15,15 @@ public class DataLogController {
             = "\\Fail.txt";
     
     private DateTimeFormatter _dateTimeFormatter;
+    private DateTimeFormatter _dateFormatter;
     private LocalDateTime _localDateTime;
-    private String _dateFormat = "dd/MM/yyyy HH:mm:ss";
+    private final String _dateTimeFormat = "dd/MM/yyyy HH:mm:ss";
+    private final String _dateFormat = "dd/MM/yyyy";
     private String _logPath;
     private boolean _isDebugMode;
     private int _successCallCounter;
     private int _failedCallCounter;
+    private String _currentDate; // For storing the current date
     
     /**
      * This constructor makes sure the class can not be an
@@ -28,13 +31,16 @@ public class DataLogController {
      */
     private DataLogController()
     {
-        _dateTimeFormatter = DateTimeFormatter.ofPattern(_dateFormat);
+        _dateTimeFormatter = DateTimeFormatter.ofPattern(_dateTimeFormat);
+        _dateFormatter = DateTimeFormatter.ofPattern(_dateFormat);
         _localDateTime = LocalDateTime.now();
         _logPath = System.getProperty("user.home");
         _isDebugMode = false;
         
         _successCallCounter = 0;
         _failedCallCounter = 0;
+        
+        _currentDate = GetDate(); // Getting the current date
     }
     
     /**
@@ -52,6 +58,38 @@ public class DataLogController {
         
         return " - " + _dateTimeFormatter.format(_localDateTime)
                 .toString();
+    }
+    
+    /**
+     * This method returns the current local date.
+     * 
+     * @return The current local date, example "02/11/2019",
+     *         of type String
+     */
+    private String GetDate()
+    {
+        _localDateTime = null; // Helping garbage
+        _localDateTime = LocalDateTime.now(); // Getting a new
+                                              // instance with
+                                              // updated time
+                                              
+        return _dateFormatter.format(_localDateTime);
+    }
+    
+    /**
+     * This method sets the current date.
+     */
+    public void SetCurrentDate(){ _currentDate = GetDate(); }
+    
+    /**
+     * This method checks if the day is the same day.
+     * 
+     * @return True means the day is the same day, false otherwise,
+     *         of type boolean
+     */
+    public boolean IsSamdDay()
+    {
+        return GetDate().equalsIgnoreCase(_currentDate);
     }
     
     /**
