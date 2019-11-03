@@ -19,6 +19,7 @@ public class FileController {
     public static final String CommandDone = "-done-";
     
     private List<String> _data;
+    private String dataConverter;
     
     /**
      * This class can not be an instant.
@@ -45,6 +46,57 @@ public class FileController {
                     new PrintWriter(path, "UTF-8");
             
             writer.print(data); // Storing the data
+            writer.close(); // Closing the writer
+        }
+        catch(FileNotFoundException e)
+        {
+            DataLogController.GetInstance()
+                    .LogFailed("Error: FileController, "
+                    + "FileNotFoundException, "
+                    + "SaveFileOverWrite(String, String), "
+                    + "Message: " + e.getMessage());
+        }
+        catch(IOException e)
+        {
+            DataLogController.GetInstance()
+                    .LogFailed("Error: FileController, "
+                    + "IOException, "
+                    + "SaveFileOverWrite(String, String), "
+                    + "Message: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * This method saves the data by over writing the old
+     * data on the given path.
+     * 
+     * @param path The path of the save location including
+     *             the file name and extension, of type
+     *             String
+     * 
+     * @param data The data to be store, of type List<String>
+     */
+    public void SaveFileOverWrite(String path, List<String> data)
+    {
+        try
+        {
+            dataConverter = "";
+            
+            // Loop for converteing data to be saveable
+            while(data.size() != 0)
+            {
+                // Adding the data into the converted
+                dataConverter += data.size() == 1 ? 
+                              data.get(0) : data.get(0) + "\n";
+                
+                data.remove(0); // Removing data from 0th index
+            }
+            
+            // Opening a writer
+            PrintWriter writer = 
+                    new PrintWriter(path, "UTF-8");
+            
+            writer.print(dataConverter); // Storing the data
             writer.close(); // Closing the writer
         }
         catch(FileNotFoundException e)
@@ -158,11 +210,25 @@ public class FileController {
     }
     
     /**
+     * This method gets the whole data list.
+     * 
+     * @return The whole data list, of type List<String>
+     */
+    public List<String> GetData(){ return _data; }
+    
+    /**
      * This method returns the indexth data.
      * 
      * @return The indexth data, of type String
      */
     public String GetData(int index){ return _data.get(index); }
+    
+    /**
+     * This method returns the number of elements in the data.
+     * 
+     * @return The number of elements in data, of type int
+     */
+    public int GetDataSize(){ return _data.size(); }
     
     /**
      * This method checks if there are any data available.
