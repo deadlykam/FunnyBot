@@ -49,7 +49,7 @@ public class DataLogController {
      * @return The current local time with format example
      *         " - 27/10/2019 16:03:03", of type String
      */
-    private String GetDateTime()
+    private String GetDateTimeFormatted()
     {
         _localDateTime = null; // Helping garbage
         _localDateTime = LocalDateTime.now(); // Getting a new
@@ -74,6 +74,23 @@ public class DataLogController {
                                               // updated time
                                               
         return _dateFormatter.format(_localDateTime);
+    }
+    
+    /**
+     * This method returns the current local time with format.
+     * 
+     * @return The current local time with format example
+     *         " - 03/11/2019 15:37:03", of type String
+     */
+    public String GetDateTime()
+    {
+        _localDateTime = null; // Helping garbage
+        _localDateTime = LocalDateTime.now(); // Getting a new
+                                              // instance with
+                                              // updated time
+        
+        return _dateTimeFormatter.format(_localDateTime)
+               .toString();
     }
     
     /**
@@ -104,11 +121,11 @@ public class DataLogController {
         FileController.GetInstance()
                 .SaveFileAppend(
                     _logPath + _logSuccessFileName,
-                    log + GetDateTime());
+                    log + GetDateTimeFormatted());
         
         // Checking if debug mode is on
         if(_isDebugMode)
-            System.out.println(log + GetDateTime());
+            System.out.println(log + GetDateTimeFormatted());
     }
     
     /**
@@ -123,11 +140,11 @@ public class DataLogController {
         FileController.GetInstance()
                 .SaveFileAppend(
                     _logPath + _logFailFileName,
-                    log + GetDateTime());
+                    log + GetDateTimeFormatted());
         
         // Checking if debug mode is on
         if(_isDebugMode)
-            System.out.println(log + GetDateTime());
+            System.out.println(log + GetDateTimeFormatted());
     }
     
     /**
