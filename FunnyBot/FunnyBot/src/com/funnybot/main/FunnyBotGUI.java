@@ -9,13 +9,19 @@ import com.funnybot.filecontrollers.FileController;
 import com.funnybot.helpers.DataLogController;
 import com.funnybot.twittercontrollers.TimerCycleController;
 import com.funnybot.twittercontrollers.TwitterController;
+import com.funnybot.twittercontrollers.TwitterMessageController;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 
 public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
 
     private boolean _isStart;
     private Thread _appThread;
+    private int _counter;
+    private String _tempTweet;
     
     /**
      * Creates new form FunnyBotGUI
@@ -38,10 +44,47 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                                            // timer cycle
                                            // controller
                                            
+        TwitterMessageController.Initialize(); // Initializing the
+                                               // twitter messages
+                                           
         _appThread = new Thread(this);
         _appThread.start();
+        
+        _counter = 0; // Setting the counter default value
+        _tempTweet = ""; // Setting the default tweet message
+        
+        // Centering the texts in the table
+        DefaultTableCellRenderer centerRenderer = 
+                new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        TableInfo.setDefaultRenderer(String.class, centerRenderer);
+        TableInfo.setDefaultRenderer(Integer.class, centerRenderer);
     }
 
+    /**
+     * This method returns the row addable table.
+     * 
+     * @return The addable table, of type DefaultTableModel
+     */
+    private DefaultTableModel GetTable(){
+        return (DefaultTableModel)TableInfo.getModel();
+    }
+    
+    /**
+     * This method adds sent tweet to the table.
+     * 
+     * @param tweet The tweet message to add, of type String
+     */
+    private void AddTweetToTable(String tweet)
+    {
+        GetTable().addRow(new Object[]{
+            _counter, tweet,
+            DataLogController.GetInstance()
+                .GetDateTime()});
+        
+        _counter++;
+    }
+    
     /**
      * This method returns the status of the bot.
      * 
@@ -86,17 +129,59 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                     // Condition for sending messages
                     if(DataLogController.GetInstance().IsSamdDay())
                     {
-                        //Todo: Send tweet here
+                        // Condition to check if messages available
+                        if(TwitterMessageController.GetInstance()
+                                .HasTweetMessage())
+                        {
+                            // Checking if twitter credentials given
+                            if(TwitterController.GetInstance()
+                                    .IsCredentialsGiven()){
+                                // Storing the temp tweet here
+                                _tempTweet = TwitterMessageController
+                                        .GetInstance()
+                                        .GetTweet(TwitterMessageController
+                                                .GetInstance()
+                                                .GetTweetIndex());
+
+                                // Sending tweet
+                                TwitterController.GetInstance()
+                                        .SendTweet(_tempTweet);
+
+                                // Adding tweet message to table
+                                AddTweetToTable(_tempTweet);
+                            }
+                            else // Twitter Credentials not given
+                            {
+                                // Adding error message to table
+                                AddTweetToTable("Tweeter credentails "
+                                        + "not given.");
+                            }
+                        }
+                        else // No more message available
+                        {
+                            // Adding error message to table
+                            AddTweetToTable("Waiting for tweet "
+                                    + "message reset.");
+                            
+                            DataLogController.GetInstance()
+                            .LogFailed("FunnyBotGUI, "
+                                     + "run(), "
+                                     + "NoMoreMessages, "
+                                     + "Message: Tried to send tweet but no "
+                                     + "more tweet messages available "
+                                     + "for the day. Wating for message"
+                                     + " reset.");
+                        }
                     }
                     else // Condition for resetting the messages
                     {
                         DataLogController.GetInstance()
                                 .SetCurrentDate();
                         
-                        //Todo: Reset all the messages here
+                        // Resetting the messages
+                        TwitterMessageController.GetInstance()
+                                .ResetMessages();
                     }
-                    
-                    System.out.println("Sent tweet!");
                     
                     // Updating the bottom bar
                     UpdateBottomBar();
@@ -128,15 +213,16 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private void initComponents() {
 
         FileChooser = new javax.swing.JFileChooser();
-        BtnTest = new javax.swing.JButton();
-        TxtTest = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         LblCounter = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TableInfo = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         MenuOpen = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         MenuCredentials = new javax.swing.JMenuItem();
+        MenuTweets = new javax.swing.JMenuItem();
         MenuLogPath = new javax.swing.JMenuItem();
         btnMenuSetTimer = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
@@ -144,13 +230,6 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         btnStop = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        BtnTest.setText("TestButton");
-        BtnTest.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnTestActionPerformed(evt);
-            }
-        });
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -163,12 +242,30 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(LblCounter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(LblCounter, javax.swing.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(LblCounter, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
         );
+
+        TableInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Message", "Date"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(TableInfo);
 
         jMenu1.setText("File");
 
@@ -191,6 +288,14 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
             }
         });
         jMenu2.add(MenuCredentials);
+
+        MenuTweets.setText("Tweets");
+        MenuTweets.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuTweetsActionPerformed(evt);
+            }
+        });
+        jMenu2.add(MenuTweets);
 
         MenuLogPath.setText("Log Path");
         MenuLogPath.addActionListener(new java.awt.event.ActionListener() {
@@ -237,25 +342,18 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(164, 164, 164)
-                        .addComponent(TxtTest, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(264, 264, 264)
-                        .addComponent(BtnTest)))
-                .addContainerGap(175, Short.MAX_VALUE))
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(115, Short.MAX_VALUE)
-                .addComponent(TxtTest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(BtnTest)
-                .addGap(152, 152, 152)
+                .addContainerGap(64, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -294,10 +392,6 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private void MenuCredentialsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuCredentialsActionPerformed
         new CredentialUI().setVisible(true);
     }//GEN-LAST:event_MenuCredentialsActionPerformed
-
-    private void BtnTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTestActionPerformed
-        TwitterController.GetInstance().SendTweet(TxtTest.getText());
-    }//GEN-LAST:event_BtnTestActionPerformed
 
     private void MenuLogPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLogPathActionPerformed
         // Setting the mode of the file chooser to directories only
@@ -351,6 +445,10 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                         + "Successfully stopped the bot.");
     }//GEN-LAST:event_btnStopActionPerformed
 
+    private void MenuTweetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuTweetsActionPerformed
+        new MessagesUI().setVisible(true);
+    }//GEN-LAST:event_MenuTweetsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -391,13 +489,13 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnTest;
     private javax.swing.JFileChooser FileChooser;
     private javax.swing.JLabel LblCounter;
     private javax.swing.JMenuItem MenuCredentials;
     private javax.swing.JMenuItem MenuLogPath;
     private javax.swing.JMenuItem MenuOpen;
-    private javax.swing.JTextField TxtTest;
+    private javax.swing.JMenuItem MenuTweets;
+    private javax.swing.JTable TableInfo;
     private javax.swing.JMenuItem btnMenuSetTimer;
     private javax.swing.JMenuItem btnStart;
     private javax.swing.JMenuItem btnStop;
@@ -406,6 +504,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
 }
