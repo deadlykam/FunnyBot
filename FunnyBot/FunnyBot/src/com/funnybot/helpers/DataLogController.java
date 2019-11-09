@@ -51,7 +51,11 @@ public class DataLogController {
      */
     private String GetDateTimeFormatted()
     {
-        _localDateTime = null; // Helping garbage
+        // This line seems to cause null pointer exception,
+        // probably because thread is involved if storage
+        // system is used then this might not give null pointer
+        //_localDateTime = null; // Helping garbage
+        
         _localDateTime = LocalDateTime.now(); // Getting a new
                                               // instance with
                                               // updated time
