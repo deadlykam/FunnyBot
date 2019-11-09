@@ -343,7 +343,11 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         imgStart = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        MenuNew = new javax.swing.JMenuItem();
         MenuOpen = new javax.swing.JMenuItem();
+        MenuOpenLog = new javax.swing.JMenuItem();
+        MenuSave = new javax.swing.JMenuItem();
+        MenuExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         MenuCredentials = new javax.swing.JMenuItem();
         MenuTweets = new javax.swing.JMenuItem();
@@ -409,6 +413,9 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
 
         jMenu1.setText("File");
 
+        MenuNew.setText("New");
+        jMenu1.add(MenuNew);
+
         MenuOpen.setText("Open");
         MenuOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -416,6 +423,20 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
             }
         });
         jMenu1.add(MenuOpen);
+
+        MenuOpenLog.setText("Open Log");
+        MenuOpenLog.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuOpenLogActionPerformed(evt);
+            }
+        });
+        jMenu1.add(MenuOpenLog);
+
+        MenuSave.setText("Save");
+        jMenu1.add(MenuSave);
+
+        MenuExit.setText("Exit");
+        jMenu1.add(MenuExit);
 
         jMenuBar1.add(jMenu1);
 
@@ -629,6 +650,10 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         new MessagesUI().setVisible(true);
     }//GEN-LAST:event_MenuTweetsActionPerformed
 
+    private void MenuOpenLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuOpenLogActionPerformed
+        DataLogController.GetInstance().OpenLogPath();
+    }//GEN-LAST:event_MenuOpenLogActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -672,8 +697,12 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private javax.swing.JFileChooser FileChooser;
     private javax.swing.JLabel LblCounter;
     private javax.swing.JMenuItem MenuCredentials;
+    private javax.swing.JMenuItem MenuExit;
     private javax.swing.JMenuItem MenuLogPath;
+    private javax.swing.JMenuItem MenuNew;
     private javax.swing.JMenuItem MenuOpen;
+    private javax.swing.JMenuItem MenuOpenLog;
+    private javax.swing.JMenuItem MenuSave;
     private javax.swing.JMenuItem MenuTweets;
     private javax.swing.JTable TableInfo;
     private javax.swing.JMenuItem btnMenuSetTimer;
