@@ -25,8 +25,7 @@ public class TimerCycleController
      */
     private TimerCycleController()
     {
-        _timerCycle = 0; // Resetting the timer
-        SetTimerMinute(30); // Default timer set to 30 minutes
+        _timerCycle = 0; // Setting timer to 0 at start
     }
     
     /**
@@ -104,6 +103,17 @@ public class TimerCycleController
      * @return The number of hours in the timer, of type int
      */
     public int GetHours(){ return _hours; };
+    
+    /**
+     * This method checks if the timer has been set up.
+     * 
+     * @return True means timer has been set up, false otherwise,
+     *         of type boolean
+     */
+    public boolean IsTimerSet()
+    {
+        return _timerCycle != 0;
+    }
     
     /**
      * This method shows the cycle timer.
