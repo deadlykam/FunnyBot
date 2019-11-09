@@ -10,6 +10,7 @@ import com.funnybot.helpers.DataLogController;
 import com.funnybot.twittercontrollers.TimerCycleController;
 import com.funnybot.twittercontrollers.TwitterController;
 import com.funnybot.twittercontrollers.TwitterMessageController;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -19,9 +20,14 @@ import javax.swing.table.DefaultTableModel;
 public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
 
     private boolean _isStart;
+    private boolean _isCredential;
+    private boolean _isTimer;
+    private boolean _isTweets;
     private Thread _appThread;
     private int _counter;
     private String _tempTweet;
+    private ImageIcon _iconRed;
+    private ImageIcon _iconGreen;
     
     /**
      * Creates new form FunnyBotGUI
@@ -59,6 +65,20 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         TableInfo.setDefaultRenderer(String.class, centerRenderer);
         TableInfo.setDefaultRenderer(Integer.class, centerRenderer);
+        
+        // Loading the green light icon
+        _iconGreen = new ImageIcon(getClass()
+                .getResource("resources/Lights_Green_50x.gif"));
+        
+        // Loading the red light icon
+        _iconRed = new ImageIcon(getClass()
+                .getResource("resources/Lights_Red_50x.gif"));
+        
+        // Setting the red light icons
+        imgCredentials.setIcon(_iconRed);
+        imgTweets.setIcon(_iconRed);
+        imgTimer.setIcon(_iconRed);
+        imgStart.setIcon(_iconRed);
     }
 
     /**
@@ -113,12 +133,110 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                         .GetFailCounter());
     }
     
+    /**
+     * This method checks if all the criteria has been met to
+     * start the bot.
+     * 
+     * @return True means all criteria has been met bot is allowed to
+     *         start, false otherwise, of type boolean
+     */
+    private boolean IsStartBot()
+    {
+        return IsOtherFeatures() && _isStart;
+    }
+    
+    /**
+     * This method checks if all the other features have been set up.
+     * 
+     * @return True means all other features has been set up, false
+     *         otherwise, of type boolean
+     */
+    private boolean IsOtherFeatures()
+    {
+        return _isCredential && _isTweets && _isTimer;
+    }
+    
+    /**
+     * This method checks the status of all the major features and sets
+     * the light accordingly.
+     */
+    private void CheckStatus()
+    {
+        // Condition to check if credentials are given
+        if(TwitterController.GetInstance()
+                .IsCredentialsGiven())
+        {
+            // Condition to set up credential light
+            if(!_isCredential)
+            {
+                // Setting credential light to green
+                imgCredentials.setIcon(_iconGreen);
+                _isCredential = true; // Credential given and set
+            }
+        }
+        else // Credentials not given
+        {
+            // Condition to set up credential light
+            if(_isCredential)
+            {
+                // Setting credential light to red
+                imgCredentials.setIcon(_iconRed);
+                _isCredential = false; // Credential not given and set
+            }
+        }
+        
+        // Condition to check if tweets has been loaded
+        if(TwitterMessageController.GetInstance()
+                .HasTweetMessage())
+        {
+            // Condition to set up tweets light
+            if(!_isTweets)
+            {
+                // Setting tweets light to green
+                imgTweets.setIcon(_iconGreen);
+                _isTweets = true; // Tweets given and set
+            }
+        }
+        else // Tweets not loaded
+        {
+            // Condition to set up tweets light
+            if(_isTweets)
+            {
+                // Setting tweets light to red
+                imgTweets.setIcon(_iconRed);
+                _isTweets = false; // Tweets given and set
+            }
+        }
+        
+        // Condition to check if timer has been set
+        if(TimerCycleController.GetInstance().IsTimerSet())
+        {
+            // Condition to set up timer light
+            if(!_isTimer)
+            {
+                // Setting timer light to green
+                imgTimer.setIcon(_iconGreen);
+                _isTimer = true; // Timer given and set
+            }
+        }
+        else // Timer not set
+        {
+            // Condition to set up timer light
+            if(_isTimer)
+            {
+                // Setting timer light to red
+                imgTimer.setIcon(_iconRed);
+                _isTimer = false; // Timer not given and set
+            }
+        }
+    }
+    
     @Override
     public void run() {
         while(true) // Continuous thread
         {
             // Condition for starting the bot
-            if(_isStart)
+            if(IsStartBot())
             {
                 try
                 {
@@ -200,6 +318,8 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                 // Updating the bottom bar
                 UpdateBottomBar();
             }
+            
+            CheckStatus(); // Updating the status of the lights
         }
     }
     
@@ -217,6 +337,10 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         LblCounter = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TableInfo = new javax.swing.JTable();
+        imgCredentials = new javax.swing.JLabel();
+        imgTweets = new javax.swing.JLabel();
+        imgTimer = new javax.swing.JLabel();
+        imgStart = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         MenuOpen = new javax.swing.JMenuItem();
@@ -242,7 +366,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(LblCounter, javax.swing.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
+            .addComponent(LblCounter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -266,6 +390,22 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
             }
         });
         jScrollPane1.setViewportView(TableInfo);
+
+        imgCredentials.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        imgCredentials.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/funnybot/main/resources/Lights_Red_50x.gif"))); // NOI18N
+        imgCredentials.setText("Credentials");
+
+        imgTweets.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        imgTweets.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/funnybot/main/resources/Lights_Red_50x.gif"))); // NOI18N
+        imgTweets.setText("Tweets");
+
+        imgTimer.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        imgTimer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/funnybot/main/resources/Lights_Red_50x.gif"))); // NOI18N
+        imgTimer.setText("Timer");
+
+        imgStart.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        imgStart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/funnybot/main/resources/Lights_Red_50x.gif"))); // NOI18N
+        imgStart.setText("Start");
 
         jMenu1.setText("File");
 
@@ -345,14 +485,30 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(imgCredentials)
+                        .addGap(54, 54, 54)
+                        .addComponent(imgTweets, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(imgTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(49, 49, 49)
+                        .addComponent(imgStart, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(64, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(imgTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(imgStart, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(imgTweets, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(imgCredentials, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -415,35 +571,41 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     }//GEN-LAST:event_btnMenuSetTimerActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        _isStart = true; // Starting the bot
-        btnStart.setEnabled(false);
-        btnStop.setEnabled(true);
-        
-        DataLogController.GetInstance()
-                .LogSuccess("Success: FunnyBotGUI, "
-                        + "btnStartActionPerformed(ActionEvent), "
-                        + "Successfully started the bot.");
-        
-        // Updating the bottom bar
-        UpdateBottomBar();
-        
-        // Setting the current date
-        DataLogController.GetInstance().SetCurrentDate();
-        
-        // Sending the starting tweet
-        TwitterController.GetInstance()
-                .SendTweet(TwitterMessageController.GetInstance()
-                        .GetStartMessage());
-        
-        // Adding tweet message to table
-        AddTweetToTable(TwitterMessageController.GetInstance()
-                        .GetStartMessage());
+        if(IsOtherFeatures()){
+            _isStart = true; // Starting the bot
+            btnStart.setEnabled(false);
+            btnStop.setEnabled(true);
+
+            imgStart.setIcon(_iconGreen); // Setting the light to green
+            
+            DataLogController.GetInstance()
+                    .LogSuccess("Success: FunnyBotGUI, "
+                            + "btnStartActionPerformed(ActionEvent), "
+                            + "Successfully started the bot.");
+
+            // Updating the bottom bar
+            UpdateBottomBar();
+
+            // Setting the current date
+            DataLogController.GetInstance().SetCurrentDate();
+
+            // Sending the starting tweet
+            TwitterController.GetInstance()
+                    .SendTweet(TwitterMessageController.GetInstance()
+                            .GetStartMessage());
+
+            // Adding tweet message to table
+            AddTweetToTable(TwitterMessageController.GetInstance()
+                            .GetStartMessage());
+        }
     }//GEN-LAST:event_btnStartActionPerformed
 
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         _isStart = false; // Stopping the bot
         btnStart.setEnabled(true);
         btnStop.setEnabled(false);
+        
+        imgStart.setIcon(_iconRed); // Setting the light to red
         
         // Condition for stopping the thread
         if(!_appThread.isInterrupted()) _appThread.interrupt();
@@ -517,6 +679,10 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private javax.swing.JMenuItem btnMenuSetTimer;
     private javax.swing.JMenuItem btnStart;
     private javax.swing.JMenuItem btnStop;
+    private javax.swing.JLabel imgCredentials;
+    private javax.swing.JLabel imgStart;
+    private javax.swing.JLabel imgTimer;
+    private javax.swing.JLabel imgTweets;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
