@@ -12,6 +12,8 @@ public class TwitterMessageController {
     private List<TweetInfo> _messages;
     private List<TweetInfo> _usedMessages;
     private List<String> _dataConverter;
+    private String _startMessage;
+    private String _endMessage;
     private Random _random;
     
     /**
@@ -22,6 +24,8 @@ public class TwitterMessageController {
     {
         _messages = new ArrayList<TweetInfo>();
         _usedMessages = new ArrayList<TweetInfo>();
+        _startMessage = "";
+        _endMessage = "";
         _random = new Random();
     }
     
@@ -36,19 +40,30 @@ public class TwitterMessageController {
         _messages = new ArrayList<TweetInfo>(); // Instantiating a
                                                 // new collector
         
-        // Loop for adding all the messages
-        for(int i = 0; i < messages.size(); i++)
+        // Loop for adding all the messages except
+        // start and end message
+        for(int i = 0; i < messages.size() - 2; i++)
         {
             _messages.add(new TweetInfo(messages.get(i), i));
         }
+        
+        // Setting the start message
+        _startMessage = messages.get(messages.size() - 2);
+        
+        // Setting the end message
+        _endMessage = messages.get(messages.size() - 1);
     }
     
     /**
      * This method gets a list of all messages.
      * 
+     * @param isStartEnd The flag to decide if to contain the start and end
+     *                   message, True means to contain start and end message,
+     *                   false otherwise, of type boolean
+     * 
      * @return All messages, of type List<String>
      */
-    public List<String> GetMessages()
+    public List<String> GetMessages(boolean isStartEnd)
     {
         ResetMessages(); // Resetting messages
         
@@ -62,6 +77,14 @@ public class TwitterMessageController {
             _dataConverter.add(_messages.get(i).GetMessage());
         }
         
+        // Condition to add start and end messages
+        if(isStartEnd)
+        {
+            _dataConverter.add(_startMessage); // Adding start message
+            _dataConverter.add(_endMessage);   // Adding end message
+        }
+        
+        // Adding end of line command
         _dataConverter.add(FileController.CommandDone);
         
         return _dataConverter; // Returning all the messages
@@ -133,6 +156,34 @@ public class TwitterMessageController {
         _messages.remove(index);
         return tempTweet; // Returning the tweet message
     }
+    
+    /**
+     * This method sets the start message.
+     * 
+     * @param message The start message to set, of type String
+     */
+    public void SetStartMessage(String message) { _startMessage = message; }
+    
+    /**
+     * This method gets the start message.
+     * 
+     * @return The start message, of type String
+     */
+    public String GetStartMessage() { return _startMessage; }
+    
+    /**
+     * This method sets the end message.
+     * 
+     * @param message The end message to set, of type String
+     */
+    public void SetEndMessage(String message) { _endMessage = message; }
+    
+    /**
+     * This method gets the end message.
+     * 
+     * @return The end message, of type String
+     */
+    public String GetEndMessage() { return _endMessage; }
     
     /**
      * This method initializes the singleton.
