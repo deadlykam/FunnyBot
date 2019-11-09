@@ -58,7 +58,7 @@ public class MessagesUI extends javax.swing.JFrame {
         {
             // Getting the message list
             List<String> data = TwitterMessageController.GetInstance()
-                    .GetMessages();
+                    .GetMessages(false);
             
             // Loop for adding all the tweet messages
             // to the table
@@ -102,6 +102,10 @@ public class MessagesUI extends javax.swing.JFrame {
         TableTweets = new javax.swing.JTable();
         btnLoad = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        txtStartTweet = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txtEndTweet = new javax.swing.JTextField();
 
         FileChooser.setSelectedFile(new java.io.File("C:\\Program Files\\NetBeans 8.2\\.txt"));
 
@@ -161,18 +165,26 @@ public class MessagesUI extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel2.setText("Start Tweet");
+
+        txtStartTweet.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel3.setText("End Tweet");
+
+        txtEndTweet.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnAddTweet)
+                .addGap(306, 306, 306))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(298, 298, 298)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(312, 312, 312)
-                        .addComponent(btnAddTweet))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -180,26 +192,45 @@ public class MessagesUI extends javax.swing.JFrame {
                                 .addComponent(btnLoad)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnSave))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2))))
+                            .addComponent(jScrollPane2)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtEndTweet)
+                                    .addComponent(txtStartTweet)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(296, 296, 296)
+                        .addComponent(jLabel1)))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtStartTweet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtEndTweet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAddTweet)
-                .addGap(56, 56, 56)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(58, 58, 58)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLoad)
                     .addComponent(btnSave))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -231,6 +262,14 @@ public class MessagesUI extends javax.swing.JFrame {
             TwitterMessageController.GetInstance()
                     .SetMessages(FileController.GetInstance().GetData());
             
+            // Setting the start message
+            txtStartTweet.setText(TwitterMessageController
+                    .GetInstance().GetStartMessage());
+            
+            // Setting the end message
+            txtEndTweet.setText(TwitterMessageController
+                    .GetInstance().GetEndMessage());
+            
             LoadMessagesToTable();
         }
     }//GEN-LAST:event_btnLoadActionPerformed
@@ -242,12 +281,20 @@ public class MessagesUI extends javax.swing.JFrame {
         // Condition to check if file approved to be saved
         if(status == JFileChooser.APPROVE_OPTION)
         {
+            // Saving the start tweet
+            TwitterMessageController.GetInstance()
+                    .SetStartMessage(txtStartTweet.getText());
+            
+            // Saving the end tweet
+            TwitterMessageController.GetInstance()
+                    .SetEndMessage(txtEndTweet.getText());
+            
             // Saving the data in the selected location with the file name                                                                   
             FileController.GetInstance()
                     .SaveFileOverWrite(FileChooser.getSelectedFile()
                             .toPath().toString(),
                             TwitterMessageController.GetInstance()
-                                    .GetMessages());
+                                    .GetMessages(true));
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -294,7 +341,11 @@ public class MessagesUI extends javax.swing.JFrame {
     private javax.swing.JButton btnLoad;
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField txtEndTweet;
+    private javax.swing.JTextField txtStartTweet;
     // End of variables declaration//GEN-END:variables
 }
