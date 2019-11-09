@@ -36,7 +36,6 @@ public class TwitterMessageController {
      */
     public void SetMessages(List<String> messages)
     {
-        _messages = null; // Helping garbage collector
         _messages = new ArrayList<TweetInfo>(); // Instantiating a
                                                 // new collector
         
