@@ -1,6 +1,9 @@
 package com.funnybot.helpers;
 
 import com.funnybot.filecontrollers.FileController;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -181,6 +184,24 @@ public class DataLogController {
      * @return The fail call counter, of type int
      */
     public int GetFailCounter(){ return _failedCallCounter; }
+    
+    /**
+     * This method opens the folder path of the log file.
+     */
+    public void OpenLogPath()
+    { 
+        try{
+            // Opening the log file path
+            Desktop.getDesktop().open(new File(_logPath));
+        }
+        catch(IOException e)
+        {
+            LogFailed("DataLogController, "
+                    + "OpenLogPath(), "
+                    + "Could not open log file path, "
+                    + "Error " + e.getMessage());
+        }
+    }
     
     /**
      * This method initializes the singleton.
