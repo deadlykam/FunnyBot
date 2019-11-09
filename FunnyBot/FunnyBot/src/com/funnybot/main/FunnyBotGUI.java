@@ -429,6 +429,15 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         
         // Setting the current date
         DataLogController.GetInstance().SetCurrentDate();
+        
+        // Sending the starting tweet
+        TwitterController.GetInstance()
+                .SendTweet(TwitterMessageController.GetInstance()
+                        .GetStartMessage());
+        
+        // Adding tweet message to table
+        AddTweetToTable(TwitterMessageController.GetInstance()
+                        .GetStartMessage());
     }//GEN-LAST:event_btnStartActionPerformed
 
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
@@ -438,6 +447,15 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         
         // Condition for stopping the thread
         if(!_appThread.isInterrupted()) _appThread.interrupt();
+        
+        // Sending the ending tweet
+        TwitterController.GetInstance()
+                .SendTweet(TwitterMessageController.GetInstance()
+                        .GetEndMessage());
+        
+        // Adding tweet message to table
+        AddTweetToTable(TwitterMessageController.GetInstance()
+                        .GetEndMessage());
         
         DataLogController.GetInstance()
                 .LogSuccess("Success: FunnyBotGUI, "
