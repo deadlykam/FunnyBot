@@ -35,6 +35,14 @@ public class MessagesUI extends javax.swing.JFrame {
         TableTweets.setDefaultRenderer(String.class, centerRenderer);
         TableTweets.setDefaultRenderer(Integer.class, centerRenderer);
         
+        // Setting the start message
+            txtStartTweet.setText(TwitterMessageController
+                    .GetInstance().GetStartMessage());
+            
+        // Setting the end message
+        txtEndTweet.setText(TwitterMessageController
+                .GetInstance().GetEndMessage());
+        
         LoadMessagesToTable();
     }
 
@@ -58,7 +66,7 @@ public class MessagesUI extends javax.swing.JFrame {
         {
             // Getting the message list
             List<String> data = TwitterMessageController.GetInstance()
-                    .GetMessages(false);
+                    .GetData(false);
             
             // Loop for adding all the tweet messages
             // to the table
@@ -100,12 +108,11 @@ public class MessagesUI extends javax.swing.JFrame {
         btnAddTweet = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         TableTweets = new javax.swing.JTable();
-        btnLoad = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         txtStartTweet = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtEndTweet = new javax.swing.JTextField();
+        btnSet = new javax.swing.JButton();
 
         FileChooser.setSelectedFile(new java.io.File("C:\\Program Files\\NetBeans 8.2\\.txt"));
 
@@ -151,20 +158,6 @@ public class MessagesUI extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(TableTweets);
 
-        btnLoad.setText("Load Tweets");
-        btnLoad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoadActionPerformed(evt);
-            }
-        });
-
-        btnSave.setText("Save Tweets");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
-            }
-        });
-
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel2.setText("Start Tweet");
 
@@ -174,6 +167,13 @@ public class MessagesUI extends javax.swing.JFrame {
         jLabel3.setText("End Tweet");
 
         txtEndTweet.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+
+        btnSet.setText("Set");
+        btnSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSetActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -189,9 +189,8 @@ public class MessagesUI extends javax.swing.JFrame {
                         .addGap(23, 23, 23)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnLoad)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSave))
+                                .addGap(281, 281, 281)
+                                .addComponent(btnSet, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -227,9 +226,7 @@ public class MessagesUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLoad)
-                    .addComponent(btnSave))
+                .addComponent(btnSet)
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -246,57 +243,15 @@ public class MessagesUI extends javax.swing.JFrame {
         TextAreaTweet.setText(""); // Removing all texts once added
     }//GEN-LAST:event_btnAddTweetActionPerformed
 
-    private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
-        // Setting the mode of the file chooser to files only
-        FileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        
-        int status = FileChooser.showOpenDialog(this); // Getting status of
-                                                       // the file chooser
-                                                       
-        // Condition to check if file chooser selected a file
-        if(status == JFileChooser.APPROVE_OPTION)
-        {
-            FileController.GetInstance().LoadData(FileChooser.getSelectedFile()
-                .toPath().toString());
+    private void btnSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetActionPerformed
+        // Saving the start tweet
+        TwitterMessageController.GetInstance()
+                .SetStartMessage(txtStartTweet.getText());
             
-            TwitterMessageController.GetInstance()
-                    .SetMessages(FileController.GetInstance().GetData());
-            
-            // Setting the start message
-            txtStartTweet.setText(TwitterMessageController
-                    .GetInstance().GetStartMessage());
-            
-            // Setting the end message
-            txtEndTweet.setText(TwitterMessageController
-                    .GetInstance().GetEndMessage());
-            
-            LoadMessagesToTable();
-        }
-    }//GEN-LAST:event_btnLoadActionPerformed
-
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        int status = FileChooser.showSaveDialog(this); // Getting status of
-                                                       // the file chooser
-                                                       
-        // Condition to check if file approved to be saved
-        if(status == JFileChooser.APPROVE_OPTION)
-        {
-            // Saving the start tweet
-            TwitterMessageController.GetInstance()
-                    .SetStartMessage(txtStartTweet.getText());
-            
-            // Saving the end tweet
-            TwitterMessageController.GetInstance()
-                    .SetEndMessage(txtEndTweet.getText());
-            
-            // Saving the data in the selected location with the file name                                                                   
-            FileController.GetInstance()
-                    .SaveFileOverWrite(FileChooser.getSelectedFile()
-                            .toPath().toString(),
-                            TwitterMessageController.GetInstance()
-                                    .GetMessages(true));
-        }
-    }//GEN-LAST:event_btnSaveActionPerformed
+        // Saving the end tweet
+        TwitterMessageController.GetInstance()
+                .SetEndMessage(txtEndTweet.getText());
+    }//GEN-LAST:event_btnSetActionPerformed
 
     /**
      * @param args the command line arguments
@@ -338,8 +293,7 @@ public class MessagesUI extends javax.swing.JFrame {
     private javax.swing.JTable TableTweets;
     private javax.swing.JTextArea TextAreaTweet;
     private javax.swing.JButton btnAddTweet;
-    private javax.swing.JButton btnLoad;
-    private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSet;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

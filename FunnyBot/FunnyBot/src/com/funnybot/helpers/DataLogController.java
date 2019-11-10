@@ -163,6 +163,13 @@ public class DataLogController {
     public void SetPath(String path){ _logPath = path; }
     
     /**
+     * This method returns the path location of the log.
+     * 
+     * @return The path location of the log, of type String
+     */
+    public String GetPath(){ return _logPath; }
+    
+    /**
      * This method sets the debug mode of the
      * DataLogController.
      */

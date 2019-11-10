@@ -4,6 +4,8 @@
   <NonVisualComponents>
     <Component class="javax.swing.JFileChooser" name="FileChooser">
     </Component>
+    <Component class="javax.swing.JFileChooser" name="MasterChooser">
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenu1">
@@ -15,6 +17,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="New"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuNewActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="MenuOpen">
               <Properties>
@@ -36,11 +41,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Save"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuSaveActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="MenuExit">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Exit"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuExitActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -65,20 +76,20 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuTweetsActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="MenuLogPath">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Log Path"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuLogPathActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="btnMenuSetTimer">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Set Timer"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMenuSetTimerActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="MenuLogPath">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Log Path"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuLogPathActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

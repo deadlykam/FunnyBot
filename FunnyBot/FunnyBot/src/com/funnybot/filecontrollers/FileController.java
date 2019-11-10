@@ -17,6 +17,12 @@ public class FileController {
     private static FileController _instance; // Singleton
     
     public static final String CommandDone = "-done-";
+    public static final String FileExtensionName = "funnybot";
+    public static final String FileExtension = "." + FileExtensionName;
+    public static final String FileExtensionSub = ".fb3";
+    public static final String FileNameCredential = "credential";
+    public static final String FileNameTweets = "tweets";
+    public static final String FileNameTimer = "timer";
     
     private List<String> _data;
     private String dataConverter;

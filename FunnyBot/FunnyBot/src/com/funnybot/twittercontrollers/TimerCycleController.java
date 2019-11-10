@@ -5,6 +5,10 @@
  */
 package com.funnybot.twittercontrollers;
 
+import com.funnybot.filecontrollers.FileController;
+import java.util.ArrayList;
+import java.util.List;
+
 public class TimerCycleController 
 {
     private final int convertSecond = 1000;
@@ -18,6 +22,8 @@ public class TimerCycleController
     private int _hours;
     
     private static TimerCycleController _instance;
+    
+    private List<String> _dataConverter;
     
     /**
      * This constructor makes sure the class can not be an
@@ -77,6 +83,20 @@ public class TimerCycleController
     }
     
     /**
+     * This method sets the timer for the cycle.
+     * 
+     * @param data The data from which the timer to set,
+     *             of type List<String>
+     */
+    public void SetTimer(List<String> data)
+    {
+        _seconds = Integer.parseInt(data.get(0));
+        _minutes = Integer.parseInt(data.get(1));
+        _hours = Integer.parseInt(data.get(2));
+        _timerCycle = Integer.parseInt(data.get(3));
+    }
+    
+    /**
      * This method gets the cycle timer value.
      * 
      * @return The cycle timer value, of type int
@@ -125,6 +145,27 @@ public class TimerCycleController
     {
         return "Cycle Timer: " + _hours + ":" 
                 + _minutes + ":" + _seconds;
+    }
+    
+    /**
+     * This method converts all the essential data 
+     * into String list.
+     * 
+     * @return The converted data, of type List<String>
+     */
+    public List<String> GetData()
+    {
+        // Initializing the converted data
+        _dataConverter = new ArrayList<String>();
+        
+        // Adding all the data to _dataConverter
+        _dataConverter.add("" + _seconds);
+        _dataConverter.add("" + _minutes);
+        _dataConverter.add("" + _hours);
+        _dataConverter.add("" + _timerCycle);
+        _dataConverter.add(FileController.CommandDone);
+        
+        return _dataConverter;
     }
     
     /**
