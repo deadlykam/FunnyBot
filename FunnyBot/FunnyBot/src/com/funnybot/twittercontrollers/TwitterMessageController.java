@@ -81,6 +81,13 @@ public class TwitterMessageController {
             _dataConverter.add(_messages.get(i).GetMessage());
         }
         
+        // Loop for adding all the used message data
+        for(int i = 0; i < _usedMessages.size(); i++)
+        {
+            // Adding the message data
+            _dataConverter.add(_usedMessages.get(i).GetMessage());
+        }
+        
         // Condition to add start and end messages
         if(isStartEnd)
         {
@@ -122,7 +129,7 @@ public class TwitterMessageController {
     }
     
     /**
-     * This method checks if there are any tweet messages left.
+     * This method checks if there are any tweet messages.
      * 
      * @return True means at least 1 tweet message left, false otherwise,
      *         of type boolean
