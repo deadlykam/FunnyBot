@@ -15,8 +15,6 @@ import javax.swing.JFileChooser;
  */
 public class CredentialUI extends javax.swing.JFrame {
 
-    private String _data;
-    
     /**
      * Creates new form CredentialUI
      */
@@ -55,7 +53,7 @@ public class CredentialUI extends javax.swing.JFrame {
         txtAccessToken = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         txtAccessTokenSecret = new javax.swing.JTextField();
-        btnSave = new javax.swing.JButton();
+        btnSet = new javax.swing.JButton();
 
         fileChooserSave.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
         fileChooserSave.setSelectedFile(new java.io.File("C:\\Program Files\\NetBeans 8.2\\.txt"));
@@ -96,11 +94,11 @@ public class CredentialUI extends javax.swing.JFrame {
             }
         });
 
-        btnSave.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        btnSave.setText("Save");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
+        btnSet.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnSet.setText("Set");
+        btnSet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
+                btnSetActionPerformed(evt);
             }
         });
 
@@ -123,9 +121,9 @@ public class CredentialUI extends javax.swing.JFrame {
                     .addComponent(txtConsumerKey))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(442, Short.MAX_VALUE)
-                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(428, 428, 428))
+                .addContainerGap(452, Short.MAX_VALUE)
+                .addComponent(btnSet, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(439, 439, 439))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,7 +145,7 @@ public class CredentialUI extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(txtAccessTokenSecret, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addComponent(btnSave)
+                .addComponent(btnSet)
                 .addGap(21, 21, 21))
         );
 
@@ -162,50 +160,14 @@ public class CredentialUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtAccessTokenSecretActionPerformed
 
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        int status = fileChooserSave.showSaveDialog(this); // Getting status of
-                                                           // the file chooser
-                                                          
-        // Condition to check if file approved to be saved
-        if(status == JFileChooser.APPROVE_OPTION)
-        {
-            _data = ""; // Removing any previous data
-            
-            _data = txtConsumerKey.getText(); // Getting the consumer key text
-            
-            _data = _data + "\n" + txtConsumerSecret.getText(); // Getting the
-                                                                // consumer key
-                                                                // secret text
-                                                                
-            _data = _data + "\n" + txtAccessToken.getText(); // Getting the
-                                                             // access token
-                                                             // key text
-            
-            _data = _data + "\n" + txtAccessTokenSecret.getText(); // Getting
-                                                                   // the access
-                                                                   // token key
-                                                                   // secret
-                                                                   // text
-            
-            _data = _data + "\n" + FileController.CommandDone;
-                                                                   
-            // Saving the data in the selected location with the file name                                                                   
-            FileController.GetInstance()
-                    .SaveFileOverWrite(fileChooserSave.getSelectedFile()
-                            .toPath().toString(),
-                            _data);
-            
-            // Setting up twitter credentials
-            TwitterController.GetInstance().SetCredentials(
-                    txtConsumerKey.getText(), 
-                    txtConsumerSecret.getText(), 
-                    txtAccessToken.getText(), 
-                    txtAccessTokenSecret.getText());
-            
-            // Initializing twitter with new credentials
-            TwitterController.GetInstance().SetupTwitter();
-        }
-    }//GEN-LAST:event_btnSaveActionPerformed
+    private void btnSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetActionPerformed
+        // Setting up twitter credentials
+        TwitterController.GetInstance().SetCredentials(
+                txtConsumerKey.getText(), 
+                txtConsumerSecret.getText(), 
+                txtAccessToken.getText(), 
+                txtAccessTokenSecret.getText());
+    }//GEN-LAST:event_btnSetActionPerformed
 
     /**
      * @param args the command line arguments
@@ -243,7 +205,7 @@ public class CredentialUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSet;
     private javax.swing.JFileChooser fileChooserSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
