@@ -10,9 +10,13 @@ import com.funnybot.helpers.DataLogController;
 import com.funnybot.twittercontrollers.TimerCycleController;
 import com.funnybot.twittercontrollers.TwitterController;
 import com.funnybot.twittercontrollers.TwitterMessageController;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -79,6 +83,11 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         imgTweets.setIcon(_iconRed);
         imgTimer.setIcon(_iconRed);
         imgStart.setIcon(_iconRed);
+        
+        // Setting the file filter for the master file chooser
+        MasterChooser.setFileFilter(
+                new FileNameExtensionFilter("FunnyBot Files", 
+                                            FileController.FileExtensionName));
     }
 
     /**
@@ -187,7 +196,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         
         // Condition to check if tweets has been loaded
         if(TwitterMessageController.GetInstance()
-                .HasTweetMessage())
+                .IsSetup())
         {
             // Condition to set up tweets light
             if(!_isTweets)
@@ -333,6 +342,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private void initComponents() {
 
         FileChooser = new javax.swing.JFileChooser();
+        MasterChooser = new javax.swing.JFileChooser();
         jPanel1 = new javax.swing.JPanel();
         LblCounter = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -351,8 +361,8 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         jMenu2 = new javax.swing.JMenu();
         MenuCredentials = new javax.swing.JMenuItem();
         MenuTweets = new javax.swing.JMenuItem();
-        MenuLogPath = new javax.swing.JMenuItem();
         btnMenuSetTimer = new javax.swing.JMenuItem();
+        MenuLogPath = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         btnStart = new javax.swing.JMenuItem();
         btnStop = new javax.swing.JMenuItem();
@@ -414,6 +424,11 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         jMenu1.setText("File");
 
         MenuNew.setText("New");
+        MenuNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuNewActionPerformed(evt);
+            }
+        });
         jMenu1.add(MenuNew);
 
         MenuOpen.setText("Open");
@@ -433,9 +448,19 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         jMenu1.add(MenuOpenLog);
 
         MenuSave.setText("Save");
+        MenuSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuSaveActionPerformed(evt);
+            }
+        });
         jMenu1.add(MenuSave);
 
         MenuExit.setText("Exit");
+        MenuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuExitActionPerformed(evt);
+            }
+        });
         jMenu1.add(MenuExit);
 
         jMenuBar1.add(jMenu1);
@@ -458,14 +483,6 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         });
         jMenu2.add(MenuTweets);
 
-        MenuLogPath.setText("Log Path");
-        MenuLogPath.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuLogPathActionPerformed(evt);
-            }
-        });
-        jMenu2.add(MenuLogPath);
-
         btnMenuSetTimer.setText("Set Timer");
         btnMenuSetTimer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -473,6 +490,14 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
             }
         });
         jMenu2.add(btnMenuSetTimer);
+
+        MenuLogPath.setText("Log Path");
+        MenuLogPath.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuLogPathActionPerformed(evt);
+            }
+        });
+        jMenu2.add(MenuLogPath);
 
         jMenuBar1.add(jMenu2);
 
@@ -538,7 +563,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     }// </editor-fold>//GEN-END:initComponents
 
     private void MenuOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuOpenActionPerformed
-        // Setting the mode of the file chooser to files only
+        /*// Setting the mode of the file chooser to files only
         FileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
         int status = FileChooser.showOpenDialog(this); // Getting status of
@@ -563,6 +588,60 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                 // Initializing twitter with new credentials
                 TwitterController.GetInstance().SetupTwitter();
             }
+        }*/
+        
+        MasterChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        
+        int status = MasterChooser.showOpenDialog(this); // Getting status of
+                                                         // the file chooser
+
+        // Condition to check if file chooser selected a file
+        if(status == JFileChooser.APPROVE_OPTION)
+        {
+            // For storing the paths to the other files
+            List<String> masterLoad = new ArrayList<String>();
+            
+            // Loading master load
+            FileController.GetInstance().LoadData(
+                    MasterChooser.getSelectedFile()
+                .toPath().toString());
+            
+            // Storing the master load data
+            masterLoad = FileController.GetInstance()
+                    .GetData();
+            
+            // Loading credentials from file
+            FileController.GetInstance().LoadData(
+                    masterLoad.get(0));
+            
+            // Setting credentials
+            TwitterController.GetInstance()
+                    .SetCredentials(FileController
+                            .GetInstance().GetData());
+            
+            // Loading tweets from file
+            FileController.GetInstance().LoadData(
+                    masterLoad.get(1));
+            
+            // Setting tweets
+            TwitterMessageController.GetInstance()
+                    .SetMessages(FileController
+                            .GetInstance().GetData());
+            
+            // Loading timer from file
+            FileController.GetInstance().LoadData(
+                    masterLoad.get(2));
+            
+            // Setting timer
+            TimerCycleController.GetInstance()
+                    .SetTimer(FileController
+                            .GetInstance().GetData());
+            
+            // Setting log location
+            DataLogController.GetInstance()
+                    .SetPath(masterLoad.get(3));
+            
+            masterLoad = null; // Helping garbage collector
         }
     }//GEN-LAST:event_MenuOpenActionPerformed
 
@@ -654,6 +733,83 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         DataLogController.GetInstance().OpenLogPath();
     }//GEN-LAST:event_MenuOpenLogActionPerformed
 
+    private void MenuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuSaveActionPerformed
+        int status = MasterChooser.showSaveDialog(this); // Getting status of
+                                                         // the file chooser
+                                                         
+        // Condition to check if file approved to be saved
+        if(status == JFileChooser.APPROVE_OPTION)
+        {
+            // Storing the path name
+            String pathName = MasterChooser.getSelectedFile()
+                            .toPath().toString();
+            
+            // Initializing the master save
+            List<String> dataMaster = new ArrayList<String>();
+            
+            // Saving credentials
+            FileController.GetInstance()
+                    .SaveFileOverWrite(
+                            pathName + 
+                            FileController.FileNameCredential + 
+                            FileController.FileExtensionSub,
+                            TwitterController.GetInstance().GetData());
+            
+            // Saving tweets
+            FileController.GetInstance()
+                    .SaveFileOverWrite(
+                            pathName + 
+                            FileController.FileNameTweets + 
+                            FileController.FileExtensionSub,
+                            TwitterMessageController.GetInstance()
+                                    .GetData(true));
+            
+            // Saving timer
+            FileController.GetInstance()
+                    .SaveFileOverWrite(
+                            pathName + 
+                            FileController.FileNameTimer + 
+                            FileController.FileExtensionSub,
+                            TimerCycleController.GetInstance().GetData());
+            
+            // Adding all the paths to master save
+            dataMaster.add(pathName + FileController.FileNameCredential 
+                    + FileController.FileExtensionSub);
+            dataMaster.add(pathName + FileController.FileNameTweets 
+                    + FileController.FileExtensionSub);
+            dataMaster.add(pathName + FileController.FileNameTimer 
+                    + FileController.FileExtensionSub);
+            dataMaster.add(DataLogController.GetInstance().GetPath());
+            dataMaster.add(FileController.CommandDone);
+            
+            // Saving credentials
+            FileController.GetInstance()
+                    .SaveFileOverWrite(
+                            pathName + FileController.FileExtension,
+                            dataMaster);
+            
+            pathName = null; // Helping garbage collector
+            dataMaster = null; // Helping garbage collector
+        }
+    }//GEN-LAST:event_MenuSaveActionPerformed
+
+    private void MenuNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuNewActionPerformed
+        TwitterController.Initialize();
+        TwitterMessageController.Initialize();
+        TimerCycleController.Initialize();
+        DataLogController.Initialize();
+        
+        // Loop for removing old data
+        while(GetTable().getRowCount() != 0)
+        {
+            GetTable().removeRow(0);
+        }
+    }//GEN-LAST:event_MenuNewActionPerformed
+
+    private void MenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuExitActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_MenuExitActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -696,6 +852,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser FileChooser;
     private javax.swing.JLabel LblCounter;
+    private javax.swing.JFileChooser MasterChooser;
     private javax.swing.JMenuItem MenuCredentials;
     private javax.swing.JMenuItem MenuExit;
     private javax.swing.JMenuItem MenuLogPath;
