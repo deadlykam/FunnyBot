@@ -102,6 +102,8 @@ public class TwitterMessageController {
     public void AddMessage(String message)
     {
         _messages.add(new TweetInfo(message, _messages.size()));
+        
+        _isMessageSetup = true; // Message has been set up
     }
     
     /**
