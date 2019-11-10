@@ -240,6 +240,25 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         }
     }
     
+    /**
+     * This method sets enables/disables menus.
+     * 
+     * @param isEnabled The flag which enables/disables menus,
+     *                  of type boolean
+     */
+    private void SetMenuButtons(boolean isEnabled)
+    {
+        MenuNew.setEnabled(isEnabled);
+        MenuOpen.setEnabled(isEnabled);
+        MenuOpenLog.setEnabled(isEnabled);
+        MenuSave.setEnabled(isEnabled);
+        MenuExit.setEnabled(isEnabled);
+        MenuCredentials.setEnabled(isEnabled);
+        MenuTweets.setEnabled(isEnabled);
+        MenuSetTimer.setEnabled(isEnabled);
+        MenuLogPath.setEnabled(isEnabled);
+    }
+    
     @Override
     public void run() {
         while(true) // Continuous thread
@@ -361,7 +380,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         jMenu2 = new javax.swing.JMenu();
         MenuCredentials = new javax.swing.JMenuItem();
         MenuTweets = new javax.swing.JMenuItem();
-        btnMenuSetTimer = new javax.swing.JMenuItem();
+        MenuSetTimer = new javax.swing.JMenuItem();
         MenuLogPath = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         btnStart = new javax.swing.JMenuItem();
@@ -483,13 +502,13 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         });
         jMenu2.add(MenuTweets);
 
-        btnMenuSetTimer.setText("Set Timer");
-        btnMenuSetTimer.addActionListener(new java.awt.event.ActionListener() {
+        MenuSetTimer.setText("Set Timer");
+        MenuSetTimer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMenuSetTimerActionPerformed(evt);
+                MenuSetTimerActionPerformed(evt);
             }
         });
-        jMenu2.add(btnMenuSetTimer);
+        jMenu2.add(MenuSetTimer);
 
         MenuLogPath.setText("Log Path");
         MenuLogPath.addActionListener(new java.awt.event.ActionListener() {
@@ -563,33 +582,6 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     }// </editor-fold>//GEN-END:initComponents
 
     private void MenuOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuOpenActionPerformed
-        /*// Setting the mode of the file chooser to files only
-        FileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        
-        int status = FileChooser.showOpenDialog(this); // Getting status of
-                                                       // the file chooser
-                                                       
-        // Condition to check if file chooser selected a file
-        if(status == JFileChooser.APPROVE_OPTION)
-        {
-            FileController.GetInstance().LoadData(FileChooser.getSelectedFile()
-                .toPath().toString());
-
-            // Checking if data has been loaded
-            if(FileController.GetInstance().IsDataTemp()){
-                
-                // Setting up twitter credentials
-                TwitterController.GetInstance().SetCredentials(
-                        FileController.GetInstance().GetData(0), 
-                        FileController.GetInstance().GetData(1), 
-                        FileController.GetInstance().GetData(2),
-                        FileController.GetInstance().GetData(3));
-                
-                // Initializing twitter with new credentials
-                TwitterController.GetInstance().SetupTwitter();
-            }
-        }*/
-        
         MasterChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
         int status = MasterChooser.showOpenDialog(this); // Getting status of
@@ -666,16 +658,17 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         }
     }//GEN-LAST:event_MenuLogPathActionPerformed
 
-    private void btnMenuSetTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuSetTimerActionPerformed
+    private void MenuSetTimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuSetTimerActionPerformed
         new TimerUI().setVisible(true);
-    }//GEN-LAST:event_btnMenuSetTimerActionPerformed
+    }//GEN-LAST:event_MenuSetTimerActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
         if(IsOtherFeatures()){
             _isStart = true; // Starting the bot
             btnStart.setEnabled(false);
             btnStop.setEnabled(true);
-
+            SetMenuButtons(false); // Disabling menu buttons
+            
             imgStart.setIcon(_iconGreen); // Setting the light to green
             
             DataLogController.GetInstance()
@@ -707,6 +700,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         _isStart = false; // Stopping the bot
         btnStart.setEnabled(true);
         btnStop.setEnabled(false);
+        SetMenuButtons(true); // Enabling menu buttons
         
         imgStart.setIcon(_iconRed); // Setting the light to red
         
@@ -863,9 +857,9 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private javax.swing.JMenuItem MenuOpen;
     private javax.swing.JMenuItem MenuOpenLog;
     private javax.swing.JMenuItem MenuSave;
+    private javax.swing.JMenuItem MenuSetTimer;
     private javax.swing.JMenuItem MenuTweets;
     private javax.swing.JTable TableInfo;
-    private javax.swing.JMenuItem btnMenuSetTimer;
     private javax.swing.JMenuItem btnStart;
     private javax.swing.JMenuItem btnStop;
     private javax.swing.JLabel imgCredentials;
