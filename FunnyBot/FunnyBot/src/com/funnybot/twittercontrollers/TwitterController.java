@@ -1,6 +1,9 @@
 package com.funnybot.twittercontrollers;
 
+import com.funnybot.filecontrollers.FileController;
 import com.funnybot.helpers.DataLogController;
+import java.util.ArrayList;
+import java.util.List;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -18,6 +21,8 @@ public class TwitterController {
     private ConfigurationBuilder _configurationBuilder;
     private TwitterFactory _twitterFactory;
     private Twitter _twitter;
+    
+    private List<String> _dataConverter;
     
     /**
      * This constructor makes sure the class can not be an
@@ -133,7 +138,23 @@ public class TwitterController {
         _accessTokenSecret = accessTokenSecret;
     }
     
-     /**
+    /**
+     * This method sets the credentials for the twitter.
+     * 
+     * @param data The data from which the credentials to set,
+     *             of type List<String>
+     */
+    public void SetCredentials(List<String> data)
+    {
+        _consumerKey = data.get(0);
+        _consumerKeySecret = data.get(1);
+        _accessToken = data.get(2);
+        _accessTokenSecret = data.get(3);
+        
+        SetupTwitter(); // Setting up twitter
+    }
+    
+    /**
      * This method returns the value of the consumer key.
      * 
      * @return The consumer key value, of type String
@@ -218,6 +239,27 @@ public class TwitterController {
                     + "SendTweet(String), "
                     + "Failed to initialize twitter, "
                     + "credentials not given.");
+    }
+    
+    /**
+     * This method converts all the essential data 
+     * into String list.
+     * 
+     * @return The converted data, of type List<String>
+     */
+    public List<String> GetData()
+    {
+        // Initializing the converted data
+        _dataConverter = new ArrayList<String>();
+        
+        // Adding all the data to _dataConverter
+        _dataConverter.add(_consumerKey);
+        _dataConverter.add(_consumerKeySecret);
+        _dataConverter.add(_accessToken);
+        _dataConverter.add(_accessTokenSecret);
+        _dataConverter.add(FileController.CommandDone);
+        
+        return _dataConverter;
     }
     
     /**
