@@ -683,6 +683,9 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
                             + "btnStartActionPerformed(ActionEvent), "
                             + "Successfully started the bot.");
 
+            // Setting up twitter
+            TwitterController.GetInstance().SetupTwitter();
+            
             // Updating the bottom bar
             UpdateBottomBar();
 
