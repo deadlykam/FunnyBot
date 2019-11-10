@@ -15,6 +15,7 @@ public class TwitterMessageController {
     private String _startMessage;
     private String _endMessage;
     private Random _random;
+    private boolean _isMessageSetup;
     
     /**
      * This constructor makes sure the class can not be an
@@ -27,6 +28,7 @@ public class TwitterMessageController {
         _startMessage = "";
         _endMessage = "";
         _random = new Random();
+        _isMessageSetup = false;
     }
     
     /**
@@ -51,10 +53,13 @@ public class TwitterMessageController {
         
         // Setting the end message
         _endMessage = messages.get(messages.size() - 1);
+        
+        _isMessageSetup = true; // Message has been set up
     }
     
     /**
-     * This method gets a list of all messages.
+     * This method converts all the essential data 
+     * into String list.
      * 
      * @param isStartEnd The flag to decide if to contain the start and end
      *                   message, True means to contain start and end message,
@@ -62,7 +67,7 @@ public class TwitterMessageController {
      * 
      * @return All messages, of type List<String>
      */
-    public List<String> GetMessages(boolean isStartEnd)
+    public List<String> GetData(boolean isStartEnd)
     {
         ResetMessages(); // Resetting messages
         
@@ -124,6 +129,14 @@ public class TwitterMessageController {
     {
         return _messages.size() != 0 ? true : false;
     }
+    
+    /**
+     * This method checks if the message has been set up.
+     * 
+     * @return True means message has been set up, false otherwise,
+     *         of type boolean
+     */
+    public boolean IsSetup(){ return _isMessageSetup; }
     
     /**
      * This method gives the index of a new tweet to use.
