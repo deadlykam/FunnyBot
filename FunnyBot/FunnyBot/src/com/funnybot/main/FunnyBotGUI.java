@@ -47,8 +47,8 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         TwitterController.Initialize(); // Initializing the
                                         // twitter controller
                                         
-        DataLogController.GetInstance() // Initializing the
-                .SetDebugEnabled(true); // data log controller
+        DataLogController.GetInstance(); // Initializing the
+                                         // data log controller
         
         TimerCycleController.Initialize(); // Initializing the
                                            // timer cycle
