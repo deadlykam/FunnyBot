@@ -387,6 +387,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         btnStop = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Funny Bot");
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
