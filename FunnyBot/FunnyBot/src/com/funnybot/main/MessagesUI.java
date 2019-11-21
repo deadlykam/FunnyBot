@@ -7,10 +7,13 @@ package com.funnybot.main;
 
 import com.funnybot.filecontrollers.FileController;
 import com.funnybot.twittercontrollers.TwitterMessageController;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JRootPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -18,9 +21,11 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Kamran
  */
-public class MessagesUI extends javax.swing.JFrame {
+public class MessagesUI extends javax.swing.JFrame implements Runnable {
 
+    private final int _tweetLimit = 280;
     private int _counter = 0;
+    private boolean _isAlive;
     
     /**
      * Creates new form MessagesUI
@@ -44,8 +49,58 @@ public class MessagesUI extends javax.swing.JFrame {
                 .GetInstance().GetEndMessage());
         
         LoadMessagesToTable();
+        
+        _isAlive = true; // Keeping the thread alive
+        
+        // Starting the thread
+        new Thread(this).start();
     }
 
+    /**
+     * This method checks if the tweet is within the tweet limit
+     * 
+     * @return True means within tweet limit, false otherwise,
+     *         of type boolean
+     */
+    private boolean IsWithInLimit()
+    {
+        return TextAreaTweet.getText().length() <= _tweetLimit;
+    }
+    
+    /**
+     * This method updates the current tweet length counter.
+     */
+    private void UpdateTweetLengthCounter()
+    {
+        txtTweetLengthCounter.setText(TextAreaTweet.getText()
+                                      .length() 
+                                      + "/"
+                                      + _tweetLimit);
+        
+        // Condition to check if the tweet length is more
+        // than the tweet limit
+        if(!IsWithInLimit())
+        {
+            // Checking if the text colour is not turn to red
+            if(TextAreaTweet.getForeground() != Color.RED)
+            {
+                // Turning text colour to red
+                TextAreaTweet.setForeground(Color.RED);
+            }
+        }
+        else // Tweet length with in limit
+        {
+            // Chcking if the text colour is not turn to black
+            if(TextAreaTweet.getForeground() != Color.BLACK)
+            {
+                // Turning text colour to black
+                TextAreaTweet.setForeground(Color.BLACK);
+            }
+        }
+        
+        
+    }
+    
     /**
      * This method checks if the start,end and at least 1
      * tweet given.
@@ -129,10 +184,13 @@ public class MessagesUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtEndTweet = new javax.swing.JTextField();
         btnSet = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        txtTweetLengthCounter = new javax.swing.JTextField();
+        btnCancel = new javax.swing.JButton();
 
         FileChooser.setSelectedFile(new java.io.File("C:\\Program Files\\NetBeans 8.2\\.txt"));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Tweets");
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -140,6 +198,7 @@ public class MessagesUI extends javax.swing.JFrame {
 
         TextAreaTweet.setColumns(20);
         TextAreaTweet.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        TextAreaTweet.setLineWrap(true);
         TextAreaTweet.setRows(5);
         jScrollPane1.setViewportView(TextAreaTweet);
 
@@ -192,35 +251,62 @@ public class MessagesUI extends javax.swing.JFrame {
             }
         });
 
+        jPanel1.setBackground(new java.awt.Color(153, 153, 153));
+
+        txtTweetLengthCounter.setEditable(false);
+        txtTweetLengthCounter.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        txtTweetLengthCounter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtTweetLengthCounter.setText("0/280");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtTweetLengthCounter, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtTweetLengthCounter)
+        );
+
+        btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnAddTweet)
-                .addGap(306, 306, 306))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(281, 281, 281)
-                                .addComponent(btnSet, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtEndTweet)
-                                    .addComponent(txtStartTweet)))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(296, 296, 296)
-                        .addComponent(jLabel1)))
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAddTweet)
+                                .addGap(190, 190, 190)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnSet, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane2)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtEndTweet)
+                                        .addComponent(txtStartTweet)))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -238,26 +324,36 @@ public class MessagesUI extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(16, 16, 16))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAddTweet)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAddTweet)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnSet)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSet)
+                    .addComponent(btnCancel))
+                .addGap(22, 22, 22))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddTweetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTweetActionPerformed
-        TwitterMessageController.GetInstance()
-                .AddMessage(TextAreaTweet.getText());
-        
-        // Adding the tweet message
-        GetTable().addRow(new Object[]{_counter, TextAreaTweet.getText()});
-        _counter++;
-        TextAreaTweet.setText(""); // Removing all texts once added
+        // Condition to check if the tweet is within limit
+        if(IsWithInLimit()){
+            TwitterMessageController.GetInstance()
+                    .AddMessage(TextAreaTweet.getText());
+
+            // Adding the tweet message
+            GetTable().addRow(new Object[]{_counter, TextAreaTweet.getText()});
+            _counter++;
+            TextAreaTweet.setText(""); // Removing all texts once added
+        }
     }//GEN-LAST:event_btnAddTweetActionPerformed
 
     private void btnSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetActionPerformed
@@ -271,10 +367,27 @@ public class MessagesUI extends javax.swing.JFrame {
             TwitterMessageController.GetInstance()
                     .SetEndMessage(txtEndTweet.getText());
             
+            _isAlive = false; // Killing the thread
+            
             this.dispose(); // Closing this menu
         }
     }//GEN-LAST:event_btnSetActionPerformed
 
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        _isAlive = false; // Killing the thread
+        this.dispose(); // Closing this menu
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    @Override
+    public void run() 
+    {
+        // Loop running the thread
+        while(_isAlive)
+        {
+            UpdateTweetLengthCounter();
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -315,13 +428,17 @@ public class MessagesUI extends javax.swing.JFrame {
     private javax.swing.JTable TableTweets;
     private javax.swing.JTextArea TextAreaTweet;
     private javax.swing.JButton btnAddTweet;
+    private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnSet;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField txtEndTweet;
     private javax.swing.JTextField txtStartTweet;
+    private javax.swing.JTextField txtTweetLengthCounter;
     // End of variables declaration//GEN-END:variables
+
 }
