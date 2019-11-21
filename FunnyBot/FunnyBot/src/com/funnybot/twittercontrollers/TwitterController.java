@@ -85,7 +85,7 @@ public class TwitterController {
             _configurationBuilder = new ConfigurationBuilder();
             
             // Setting up the configuration builder
-            _configurationBuilder.setDebugEnabled(true)
+            _configurationBuilder.setDebugEnabled(false)
                 .setOAuthConsumerKey(_consumerKey)
                 .setOAuthConsumerSecret(_consumerKeySecret)
                 .setOAuthAccessToken(_accessToken)

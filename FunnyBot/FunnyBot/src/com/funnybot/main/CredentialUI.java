@@ -59,6 +59,7 @@ public class CredentialUI extends javax.swing.JFrame {
         fileChooserSave.setSelectedFile(new java.io.File("C:\\Program Files\\NetBeans 8.2\\.txt"));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Credentials");
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);

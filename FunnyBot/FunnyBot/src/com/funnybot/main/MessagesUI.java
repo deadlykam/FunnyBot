@@ -36,8 +36,8 @@ public class MessagesUI extends javax.swing.JFrame {
         TableTweets.setDefaultRenderer(Integer.class, centerRenderer);
         
         // Setting the start message
-            txtStartTweet.setText(TwitterMessageController
-                    .GetInstance().GetStartMessage());
+        txtStartTweet.setText(TwitterMessageController
+                .GetInstance().GetStartMessage());
             
         // Setting the end message
         txtEndTweet.setText(TwitterMessageController
@@ -60,25 +60,20 @@ public class MessagesUI extends javax.swing.JFrame {
             GetTable().removeRow(0);
         }
         
-        // Checking if there is atleast 1 tweet message to show
-        if(TwitterMessageController.GetInstance()
-                .HasTweetMessage())
+        // Getting the message list
+        List<String> data = TwitterMessageController.GetInstance()
+                .GetData(false);
+
+        // Loop for adding all the tweet messages
+        // to the table
+        for(int i = 0; i < data.size(); i++)
         {
-            // Getting the message list
-            List<String> data = TwitterMessageController.GetInstance()
-                    .GetData(false);
-            
-            // Loop for adding all the tweet messages
-            // to the table
-            for(int i = 0; i < data.size(); i++)
-            {
-                // Checking if message isn't end of file
-                if(!data.get(i)
-                        .equalsIgnoreCase(FileController.CommandDone)){
-                    // Adding the tweet message
-                    GetTable().addRow(new Object[]{_counter, data.get(i)});
-                    _counter++;
-                }
+            // Checking if message isn't end of file
+            if(!data.get(i)
+                    .equalsIgnoreCase(FileController.CommandDone)){
+                // Adding the tweet message
+                GetTable().addRow(new Object[]{_counter, data.get(i)});
+                _counter++;
             }
         }
     }
@@ -117,6 +112,7 @@ public class MessagesUI extends javax.swing.JFrame {
         FileChooser.setSelectedFile(new java.io.File("C:\\Program Files\\NetBeans 8.2\\.txt"));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Tweets");
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setText("Enter Tweet");
