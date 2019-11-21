@@ -47,6 +47,27 @@ public class MessagesUI extends javax.swing.JFrame {
     }
 
     /**
+     * This method checks if the start,end and at least 1
+     * tweet given.
+     * 
+     * @return True means all the necessary tweets are given,
+     *         false otherwise, of type boolean
+     */
+    private boolean ValidateInfo()
+    {
+        // Condition to check if the validation failed
+        if(txtStartTweet.getText().isEmpty() ||
+           txtEndTweet.getText().isEmpty() ||
+           !TwitterMessageController.GetInstance()
+                   .HasTweetMessage())
+        {
+            return false; // Validation failed
+        }
+        
+        return true; // Validation succeeded
+    }
+    
+    /**
      * This method loads all the tweet messages into the table.
      */
     private void LoadMessagesToTable()
@@ -240,13 +261,18 @@ public class MessagesUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddTweetActionPerformed
 
     private void btnSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetActionPerformed
-        // Saving the start tweet
-        TwitterMessageController.GetInstance()
-                .SetStartMessage(txtStartTweet.getText());
+        // Checking if the tweets given are valid
+        if(ValidateInfo()){
+            // Saving the start tweet
+            TwitterMessageController.GetInstance()
+                    .SetStartMessage(txtStartTweet.getText());
+
+            // Saving the end tweet
+            TwitterMessageController.GetInstance()
+                    .SetEndMessage(txtEndTweet.getText());
             
-        // Saving the end tweet
-        TwitterMessageController.GetInstance()
-                .SetEndMessage(txtEndTweet.getText());
+            this.dispose(); // Closing this menu
+        }
     }//GEN-LAST:event_btnSetActionPerformed
 
     /**
