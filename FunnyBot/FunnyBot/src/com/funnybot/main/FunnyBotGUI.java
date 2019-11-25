@@ -614,6 +614,10 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
             masterLoad = FileController.GetInstance()
                     .GetData();
             
+            // Setting log location
+            DataLogController.GetInstance()
+                    .SetPath(masterLoad.get(3));
+            
             // Loading credentials from file
             FileController.GetInstance().LoadData(
                     masterLoad.get(0));
@@ -640,10 +644,6 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
             TimerCycleController.GetInstance()
                     .SetTimer(FileController
                             .GetInstance().GetData());
-            
-            // Setting log location
-            DataLogController.GetInstance()
-                    .SetPath(masterLoad.get(3));
             
             masterLoad = null; // Helping garbage collector
         }
