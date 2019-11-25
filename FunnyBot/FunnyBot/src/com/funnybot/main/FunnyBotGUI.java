@@ -257,6 +257,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         MenuTweets.setEnabled(isEnabled);
         MenuSetTimer.setEnabled(isEnabled);
         MenuLogPath.setEnabled(isEnabled);
+        MenuStartEnd.setEnabled(isEnabled);
     }
     
     @Override
@@ -385,6 +386,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         jMenu3 = new javax.swing.JMenu();
         btnStart = new javax.swing.JMenuItem();
         btnStop = new javax.swing.JMenuItem();
+        MenuStartEnd = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Funny Bot");
@@ -540,6 +542,15 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         });
         jMenu3.add(btnStop);
 
+        MenuStartEnd.setSelected(true);
+        MenuStartEnd.setText("Start/End Message");
+        MenuStartEnd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuStartEndActionPerformed(evt);
+            }
+        });
+        jMenu3.add(MenuStartEnd);
+
         jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
@@ -686,14 +697,18 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
             // Setting the current date
             DataLogController.GetInstance().SetCurrentDate();
 
-            // Sending the starting tweet
-            TwitterController.GetInstance()
-                    .SendTweet(TwitterMessageController.GetInstance()
-                            .GetStartMessage());
-
-            // Adding tweet message to table
-            AddTweetToTable(TwitterMessageController.GetInstance()
-                            .GetStartMessage());
+            // Condition to check if start message
+            // set to send
+            if(MenuStartEnd.isSelected())
+            {
+                // Sending the starting tweet
+                TwitterController.GetInstance()
+                        .SendTweet(TwitterMessageController.GetInstance()
+                                .GetStartMessage());
+                // Adding tweet message to table
+                AddTweetToTable(TwitterMessageController.GetInstance()
+                                .GetStartMessage());
+            }
         }
     }//GEN-LAST:event_btnStartActionPerformed
 
@@ -708,14 +723,17 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         // Condition for stopping the thread
         if(!_appThread.isInterrupted()) _appThread.interrupt();
         
-        // Sending the ending tweet
-        TwitterController.GetInstance()
-                .SendTweet(TwitterMessageController.GetInstance()
-                        .GetEndMessage());
-        
-        // Adding tweet message to table
-        AddTweetToTable(TwitterMessageController.GetInstance()
-                        .GetEndMessage());
+        // Condition to check if end message
+        // to send
+        if(MenuStartEnd.isSelected()){
+            // Sending the ending tweet
+            TwitterController.GetInstance()
+                    .SendTweet(TwitterMessageController.GetInstance()
+                            .GetEndMessage());
+            // Adding tweet message to table
+            AddTweetToTable(TwitterMessageController.GetInstance()
+                            .GetEndMessage());
+        }
         
         DataLogController.GetInstance()
                 .LogSuccess("Success: FunnyBotGUI, "
@@ -808,6 +826,10 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
         System.exit(0);
     }//GEN-LAST:event_MenuExitActionPerformed
 
+    private void MenuStartEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuStartEndActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MenuStartEndActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -859,6 +881,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
     private javax.swing.JMenuItem MenuOpenLog;
     private javax.swing.JMenuItem MenuSave;
     private javax.swing.JMenuItem MenuSetTimer;
+    private javax.swing.JCheckBoxMenuItem MenuStartEnd;
     private javax.swing.JMenuItem MenuTweets;
     private javax.swing.JTable TableInfo;
     private javax.swing.JMenuItem btnStart;
