@@ -21,9 +21,18 @@ _image here_
 
 #### Set Credentials
 After starting the software you will need to provide your twitter developer's consumer key, consumer secret, access token and access token secret. You can find your twitter credentials in your [twitter developer's page](https://developer.twitter.com/). In the FunnyBot software open the credentials settings from _Edit/Credentials_ menu. Here write down the consumer key, consumer secret, access token and access token secret. After giving the credentials press the _Set_ button and close the _Credential Setting_. In the main menu the credential red light will turn green indicating that credentials have been given.
-_image here_
-_image here_
-_image here_
+
+![Opening Credential Menu](https://i.imgur.com/IHg1tUd.jpg)
+
+*Figure1: Opening Credential Menu*
+
+![Credential Menu](https://i.imgur.com/lLIZqnS.jpg)
+
+*Figure2: Credential Menu*
+
+![Credentials Successfully Setup](https://i.imgur.com/oSHgVw4.jpg)
+
+*Figure3: Credentials Successfully Setup*
 
 #### Set Tweets
 Next you need to set the tweets that you want the bot to send. Open the tweet menu from _Edit/Tweets_. In the tweet menu give the _Start Message_ and _End Message_ tweets. Then type the tweet in _Enter Tweet_ box. once you are satisfied with the tweet then press the _Add Tweet_ button to add the tweet to the bot tweet listing. If you want you can add as much tweet as you want. All the tweets add will be shown on the table below. Once you are done add the tweets press the _Set_ button and close the menu. In the main menu the tweets red light will turn green indicating that tweets have been given.
