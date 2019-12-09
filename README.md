@@ -4,6 +4,27 @@ A twitter bot that tweets in a given time intervals.
 ## Description
 A twitter that tweets in a given time intervals. Tweeting a starting message and an ending message. Also tweeting in a given time interval, example tweeting after every 1 hour. I made this twitter bot as a hobby and to see how to use a bot in twitter. I will not be responsible for how you use this software. Please follow [twitter policy](https://developer.twitter.com/en/developer-terms/policy.html) for using this software, more information can be found in [twitter developer page](https://developer.twitter.com/).
 ***
+## Table of Contents:
+- [Prerequisites](#prerequisites)
+  - [Netbeans](#netbeans)
+  - [Java](#java)
+  - [Twitter4j](#twitter4j)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Set Credentials](#set-credentials)
+  - [Set Tweets](#set-tweets)
+  - [Set Timer](#set-timer)
+    - [Best example](#best-example)
+    - [Good example](#good-example)
+    - [Bad example](#bad-example)
+  - [Set Log Path](#set-log-path-optional)
+  - [Saving/Loading Your Setting](#savingloading-your-setting)
+  - [Starting The Bot](#starting-the-bot)
+- [Versioning](#versioning)
+- [Credits](#credits)
+- [Authors](#authors)
+- [License](#license)
+***
 ## Prerequisites
 ### Netbeans
 Latest [stable](https://github.com/deadlykam/FunnyBot/releases) Netbeans version is _NetBeans IDE 8.2 (Build 201609300101) NetBeans IDE is updated to version NetBeans 8.2 Patch 2_. Install the stable's version [Netbeans from their older version listing](https://netbeans.org/community/releases/82/). Or you could download the [latest version of the Netbeans](https://netbeans.apache.org/download/index.html) but that may cause problems.
@@ -142,7 +163,7 @@ To stop the bot go to _Bot/Stop_. This will stop the bot from tweeting. The Star
 *Figure20: Bot Stopped Successfully*
 
 ## Versioning
-The project uses [Semantic Versioning](https://semver.org/). Available versions can be seen in [tags on this repository]((https://github.com/deadlykam/FunnyBot/releases).
+The project uses [Semantic Versioning](https://semver.org/). Available versions can be seen in [tags on this repository](https://github.com/deadlykam/FunnyBot/releases).
 
 ## Credits
 - [Twitter4j](https://github.com/Twitter4J/Twitter4J) - Made it easy to use the twitter API.
