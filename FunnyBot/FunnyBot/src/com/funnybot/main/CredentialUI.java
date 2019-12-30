@@ -82,6 +82,7 @@ public class CredentialUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Credentials");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("resources/Icon.jpg")).getImage());
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);

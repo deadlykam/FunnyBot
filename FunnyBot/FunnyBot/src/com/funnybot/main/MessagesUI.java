@@ -192,6 +192,7 @@ public class MessagesUI extends javax.swing.JFrame implements Runnable {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Tweets");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("resources/Icon.jpg")).getImage());
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setText("Enter Tweet");

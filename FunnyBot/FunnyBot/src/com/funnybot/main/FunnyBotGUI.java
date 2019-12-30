@@ -390,6 +390,7 @@ public class FunnyBotGUI extends javax.swing.JFrame implements Runnable{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Funny Bot");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("resources/Icon.jpg")).getImage());
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
